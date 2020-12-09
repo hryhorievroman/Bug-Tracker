@@ -1,2 +1,3 @@
-# Project-one
-Bug tracker
+# Bug tracker
+3-tier architecture skeleton
+
