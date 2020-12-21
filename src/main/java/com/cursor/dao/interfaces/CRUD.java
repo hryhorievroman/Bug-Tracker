@@ -3,7 +3,7 @@ package com.cursor.dao.interfaces;
 import java.util.List;
 
 public interface CRUD<T> {
-    void create(T entity);
+    boolean create(T entity);
 
     List<T> getAll();
 
