@@ -1,6 +1,6 @@
 package com.cursor.service.exceptions;
 
-public class BaseException extends Exception {
+public class BaseException extends RuntimeException {
     private String errorMessage;
     private ErrorCode errorCode;
 
