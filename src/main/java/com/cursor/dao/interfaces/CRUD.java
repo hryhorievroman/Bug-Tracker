@@ -9,5 +9,7 @@ public interface CRUD<T> {
 
     T findById(int id);
 
+    boolean edit(int id, T entity);
+
     boolean delete(int id);
 }
