@@ -8,6 +8,4 @@ public interface Menu {
         System.out.println("You are logged out of the Bug Tracker");
         System.exit(0);
     }
-
-
 }
