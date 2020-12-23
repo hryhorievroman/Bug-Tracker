@@ -4,15 +4,15 @@ import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 
 public class Ticket {
-    static int id;
-    String name;
-    String description;
-    User assignee;
-    User reporter;
-    Status status;
-    Priority priority;
-    int timeSpent;
-    int timeEstimated;
+    private static int id;
+    private String name;
+    private String description;
+    private User assignee;
+    private User reporter;
+    private Status status;
+    private Priority priority;
+    private int timeSpent;
+    private int timeEstimated;
 
     public Ticket() {
         id++;

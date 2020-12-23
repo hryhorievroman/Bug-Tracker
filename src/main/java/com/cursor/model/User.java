@@ -1,9 +1,9 @@
 package com.cursor.model;
 
 public class User {
-    static int id;
-    String password;
-    String username;
+    private static int id;
+    private String password;
+    private String username;
 
     public User() {
         id++;
