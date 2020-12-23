@@ -10,7 +10,6 @@ import java.util.Map;
 public class UserDao implements CRUD<User> {
     private final Map<Integer, User> users = new HashMap<>();
 
-
     @Override
     public boolean create(User entity) {
         return users.put(User.getId(), entity) != null;
