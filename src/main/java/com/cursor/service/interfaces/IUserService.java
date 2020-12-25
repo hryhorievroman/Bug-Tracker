@@ -5,7 +5,7 @@ import com.cursor.service.exceptions.BadRequestException;
 
 public interface IUserService extends IService<User> {
 
-    void registerUser(User user) throws BadRequestException;
+    void registerUser(User user);
 
-    void loginUser(String username, String password) throws BadRequestException;
+    void loginUser(String username, String password);
 }

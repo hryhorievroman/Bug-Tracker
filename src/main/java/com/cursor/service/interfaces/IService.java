@@ -5,13 +5,13 @@ import com.cursor.service.exceptions.*;
 import java.util.List;
 
 public interface IService<T> {
-    void create(T entity) throws BadRequestException;
+    void create(T entity);
 
     List<T> getAll();
 
-    T findById(int id) throws NotFoundException;
+    T findById(int id);
 
-    void edit(int id, T entity) throws BadRequestException, NotFoundException;
+    void edit(int id, T entity);
 
-    void delete(int id) throws NotFoundException;
+    void delete(int id);
 }
