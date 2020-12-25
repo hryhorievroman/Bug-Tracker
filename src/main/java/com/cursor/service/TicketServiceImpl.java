@@ -8,19 +8,19 @@ import com.cursor.dao.impls.TicketDao;
 
 import java.util.List;
 
+public class TicketServiceImpl implements com.cursor.service.interfaces.TicketService {
 
-public class TicketService implements com.cursor.service.interfaces.TicketService {
-
-    private static TicketService ticketService;
+    private static TicketServiceImpl ticketServiceImpl;
     private final CRUD<Ticket> tickets = new TicketDao();
+    private static final String USER_NOT_FOUND = "The user was not found";
 
-    private TicketService() { }
+    private TicketServiceImpl() { }
 
-    public static TicketService getInstance() {
-        if (ticketService == null) {
-            ticketService = new TicketService();
+    public static TicketServiceImpl getInstance() {
+        if (ticketServiceImpl == null) {
+            ticketServiceImpl = new TicketServiceImpl();
         }
-        return ticketService;
+        return ticketServiceImpl;
     }
 
     @Override
@@ -37,13 +37,17 @@ public class TicketService implements com.cursor.service.interfaces.TicketServic
 
     @Override
     public Ticket findById(int id) {
-        ifExists(id);
+        if (checkExistence(id)) {
+            throw new NotFoundException(USER_NOT_FOUND);
+        }
         return tickets.findById(id);
     }
 
     @Override
     public void edit(int id, Ticket entity) {
-        ifExists(id);
+        if (checkExistence(id)) {
+            throw new NotFoundException(USER_NOT_FOUND);
+        }
         if (!tickets.edit(id, entity)) {
             throw new BadRequestException("Invalid ticket data");
         }
@@ -51,13 +55,13 @@ public class TicketService implements com.cursor.service.interfaces.TicketServic
 
     @Override
     public void delete(int id) {
-        ifExists(id);
+        if (checkExistence(id)) {
+            throw new NotFoundException(USER_NOT_FOUND);
+        }
         tickets.delete(id);
     }
 
-    private void ifExists(int id) { // check if ticket exists and throws exception if not
-        if (tickets.findById(id) == null) {
-            throw new NotFoundException("The user was not found");
-        }
+    private boolean checkExistence(int id) {
+        return tickets.findById(id) == null;
     }
 }
