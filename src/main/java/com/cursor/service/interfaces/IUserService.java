@@ -8,5 +8,4 @@ public interface IUserService extends IService<User> {
     void registerUser(User user) throws BadRequestException;
 
     void loginUser(String username, String password) throws BadRequestException;
-
 }
