@@ -5,27 +5,31 @@ import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.dao.interfaces.CRUD;
 import com.cursor.dao.impls.UserDao;
 import com.cursor.service.exceptions.NotFoundException;
+import com.cursor.service.interfaces.UserService;
 
 import java.util.List;
 
-public class UserService implements com.cursor.service.interfaces.UserService {
+public class UserServiceImpl implements UserService {
 
-    private static UserService userService;
+    private static UserServiceImpl userServiceImpl;
     private final CRUD<User> users = new UserDao();
 
-    private UserService() { }
+    private UserServiceImpl() { }
 
     public static UserService getInstance() {
-        if (userService == null) {
-            userService = new UserService();
+        if (userServiceImpl == null) {
+            userServiceImpl = new UserServiceImpl();
         }
-        return userService;
+        return userServiceImpl;
     }
 
     @Override
     public void registerUser(User user) {
-        if (usersContain(user.getUsername(), user.getPassword()) || user.getUsername().isBlank() || user.getPassword().isBlank()) {
+        if (checkExistence(user.getUsername())
+                || user.getUsername().isBlank() || (user.getPassword().isBlank())) {
             throw new BadRequestException("Invalid username or password");
+        } else if (user.getPassword().length() < 8) {
+            throw new BadRequestException("The password is too short");
         }
         else {
             users.create(user);
@@ -34,7 +38,7 @@ public class UserService implements com.cursor.service.interfaces.UserService {
 
     @Override
     public void loginUser(String username, String password) {
-        if (!usersContain(username, password)) {
+        if (!checkExistence(username, password)) {
             throw new BadRequestException("Username or password is incorrect");
         }
     }
@@ -53,31 +57,43 @@ public class UserService implements com.cursor.service.interfaces.UserService {
 
     @Override
     public User findById(int id) {
-        ifExists(id);
+        if (!checkExistence(id)) {
+            throw new NotFoundException("The user was not found");
+        }
         return users.findById(id);
     }
 
     @Override
     public void edit(int id, User entity) {
-        ifExists(id);
-        if (!users.edit(id, entity) || entity.getUsername().isBlank() || entity.getPassword().isBlank()) {
+        if (!checkExistence(id)) {
+            throw new NotFoundException("The user was not found");
+        }
+        else if (!users.edit(id, entity) || entity.getUsername().isBlank() || entity.getPassword().isBlank()) {
             throw new BadRequestException("Invalid user data");
         }
     }
 
     @Override
     public void delete(int id) {
-        ifExists(id);
+        checkExistence(id);
         users.delete(id);
     }
 
-    private void ifExists(int id) { // check if user exists and throws exception if not
-        if (users.findById(id) == null) {
-            throw new NotFoundException("The user was not found");
-        }
+    private boolean checkExistence(int id) {
+        return users.findById(id) != null;
     }
 
-    private boolean usersContain(String userName, String password) { // check if the user with inputted username and password exists in userDao
+    private boolean checkExistence(String userName) {
+        List<User> userList = users.getAll();
+        for (User user : userList) {
+            if (user.getUsername().equals(userName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkExistence(String userName, String password) {
         List<User> userList = users.getAll();
         for (User user : userList) {
             if (user.getUsername().equals(userName) && user.getPassword().equals(password)) {
