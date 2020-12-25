@@ -10,7 +10,17 @@ import java.util.List;
 
 public class UserService implements com.cursor.service.interfaces.UserService {
 
-    CRUD<User> users = new UserDao();
+    private static UserService userService;
+    private final CRUD<User> users = new UserDao();
+
+    private UserService() { }
+
+    public static UserService getInstance() {
+        if (userService == null) {
+            userService = new UserService();
+        }
+        return userService;
+    }
 
     @Override
     public void registerUser(User user) {
