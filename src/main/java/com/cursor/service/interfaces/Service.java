@@ -4,7 +4,7 @@ import com.cursor.service.exceptions.*;
 
 import java.util.List;
 
-public interface IService<T> {
+public interface Service<T> {
     void create(T entity);
 
     List<T> getAll();
