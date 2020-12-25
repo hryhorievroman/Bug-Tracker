@@ -9,7 +9,7 @@ public interface IService<T> {
 
     List<T> getAll();
 
-    T findById() throws NotFoundException;
+    T findById(int id) throws NotFoundException;
 
     void edit(int id, T entity) throws BadRequestException, NotFoundException;
 
