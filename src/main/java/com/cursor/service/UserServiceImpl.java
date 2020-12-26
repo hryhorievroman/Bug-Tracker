@@ -11,17 +11,7 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    private static UserServiceImpl userServiceImpl;
     private final CRUD<User> users = new UserDao();
-
-    private UserServiceImpl() { }
-
-    public static UserService getInstance() {
-        if (userServiceImpl == null) {
-            userServiceImpl = new UserServiceImpl();
-        }
-        return userServiceImpl;
-    }
 
     @Override
     public void registerUser(User user) {
