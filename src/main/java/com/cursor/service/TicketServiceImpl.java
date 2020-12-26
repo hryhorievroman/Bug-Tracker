@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TicketServiceImpl implements TicketService {
 
-    private final TicketDao tickets = new TicketDao();
+    private final TicketDao tickets = TicketDao.getInstance();
 
     @Override
     public void create(Ticket entity) {

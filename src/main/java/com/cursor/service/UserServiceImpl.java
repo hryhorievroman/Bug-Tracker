@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserDao users = new UserDao();
+    private final UserDao users = UserDao.getInstance();
 
     @Override
     public void registerUser(User user) {
@@ -19,8 +19,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Invalid username or password");
         } else if (user.getPassword().length() < 8) {
             throw new BadRequestException("The password is too short");
-        }
-        else {
+        } else {
             users.create(user);
         }
     }
