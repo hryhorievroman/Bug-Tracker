@@ -11,9 +11,11 @@ import java.util.List;
 
 public class TicketServiceImpl implements TicketService {
 
-    private final CRUD<Ticket> tickets = new TicketDao();
+    private final CRUD<Ticket> tickets;
 
-    public TicketServiceImpl(CRUD<Ticket> tickets) { }
+    public TicketServiceImpl() {
+        tickets = new TicketDao();
+    }
 
     @Override
     public void create(Ticket entity) {
