@@ -25,8 +25,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(User user) {
-        if (checkExistence(user.getUsername())
-                || user.getUsername().isBlank() || (user.getPassword().isBlank())) {
+        checkExistence(user.getUsername());
+        if (user.getUsername().isBlank() || (user.getPassword().isBlank())) {
             throw new BadRequestException("Invalid username or password");
         } else if (user.getPassword().length() < 8) {
             throw new BadRequestException("The password is too short");
@@ -38,9 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void loginUser(String username, String password) {
-        if (!checkExistence(username, password)) {
-            throw new BadRequestException("Username or password is incorrect");
-        }
+        checkExistence(username, password);
     }
 
     @Override
@@ -57,9 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(int id) {
-        if (!checkExistence(id)) {
-            throw new NotFoundException("The user was not found");
-        }
+        checkExistence(id);
         return users.findById(id);
     }
 
@@ -83,23 +79,21 @@ public class UserServiceImpl implements UserService {
         return users.findById(id) != null;
     }
 
-    private boolean checkExistence(String userName) {
+    private void checkExistence(String userName) {
         List<User> userList = users.getAll();
         for (User user : userList) {
             if (user.getUsername().equals(userName)) {
-                return true;
+                throw new NotFoundException("The user was not found");
             }
         }
-        return false;
     }
 
-    private boolean checkExistence(String userName, String password) {
+    private void checkExistence(String userName, String password) {
         List<User> userList = users.getAll();
         for (User user : userList) {
             if (user.getUsername().equals(userName) && user.getPassword().equals(password)) {
-                return true;
+                throw new BadRequestException("Username or password is incorrect");
             }
         }
-        return false;
     }
 }
