@@ -11,7 +11,11 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    private final CRUD<User> users = new UserDao();
+    private final CRUD<User> users;
+
+    public UserServiceImpl() {
+        users = new UserDao();
+    }
 
     @Override
     public void registerUser(User user) {
