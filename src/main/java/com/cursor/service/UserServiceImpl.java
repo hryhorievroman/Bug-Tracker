@@ -55,10 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void edit(int id, User entity) {
-        if (!checkExistence(id)) {
-            throw new NotFoundException("The user was not found");
-        }
-        else if (!users.edit(id, entity) || entity.getUsername().isBlank() || entity.getPassword().isBlank()) {
+        checkExistence(id);
+        if (!users.edit(id, entity)
+                || entity.getUsername().isBlank() || entity.getPassword().isBlank()) {
             throw new BadRequestException("Invalid user data");
         }
     }
@@ -69,15 +68,17 @@ public class UserServiceImpl implements UserService {
         users.delete(id);
     }
 
-    private boolean checkExistence(int id) {
-        return users.findById(id) != null;
+    private void checkExistence(int id) {
+        if (users.findById(id) == null) {
+            throw new NotFoundException("The user was not found");
+        }
     }
 
     private void checkExistence(String userName) {
         List<User> userList = users.getAll();
         for (User user : userList) {
             if (user.getUsername().equals(userName)) {
-                throw new NotFoundException("The user was not found");
+                throw new NotFoundException("User already exists");
             }
         }
     }
