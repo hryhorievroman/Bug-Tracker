@@ -13,6 +13,8 @@ public class TicketServiceImpl implements TicketService {
 
     private final CRUD<Ticket> tickets = new TicketDao();
 
+    public TicketServiceImpl(CRUD<Ticket> tickets) { }
+
     @Override
     public void create(Ticket entity) {
         if (!tickets.create(entity)) {
