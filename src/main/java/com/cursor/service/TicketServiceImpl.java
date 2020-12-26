@@ -2,7 +2,6 @@ package com.cursor.service;
 
 import com.cursor.model.Ticket;
 import com.cursor.service.exceptions.BadRequestException;
-import com.cursor.dao.interfaces.CRUD;
 import com.cursor.dao.impls.TicketDao;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.TicketService;
@@ -11,11 +10,7 @@ import java.util.List;
 
 public class TicketServiceImpl implements TicketService {
 
-    private final CRUD<Ticket> tickets;
-
-    public TicketServiceImpl() {
-        tickets = new TicketDao();
-    }
+    private final TicketDao tickets = new TicketDao();
 
     @Override
     public void create(Ticket entity) {
