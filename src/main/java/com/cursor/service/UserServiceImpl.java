@@ -2,7 +2,6 @@ package com.cursor.service;
 
 import com.cursor.model.User;
 import com.cursor.service.exceptions.BadRequestException;
-import com.cursor.dao.interfaces.CRUD;
 import com.cursor.dao.impls.UserDao;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
@@ -11,11 +10,7 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    private final CRUD<User> users;
-
-    public UserServiceImpl() {
-        users = new UserDao();
-    }
+    private final UserDao users = new UserDao();
 
     @Override
     public void registerUser(User user) {
