@@ -2,17 +2,17 @@ package com.cursor.service;
 
 import com.cursor.model.Ticket;
 import com.cursor.service.exceptions.BadRequestException;
-import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.dao.interfaces.CRUD;
 import com.cursor.dao.impls.TicketDao;
+import com.cursor.service.exceptions.NotFoundException;
+import com.cursor.service.interfaces.TicketService;
 
 import java.util.List;
 
-public class TicketServiceImpl implements com.cursor.service.interfaces.TicketService {
+public class TicketServiceImpl implements TicketService {
 
     private static TicketServiceImpl ticketServiceImpl;
     private final CRUD<Ticket> tickets = new TicketDao();
-    private static final String USER_NOT_FOUND = "The user was not found";
 
     private TicketServiceImpl() { }
 
@@ -37,17 +37,13 @@ public class TicketServiceImpl implements com.cursor.service.interfaces.TicketSe
 
     @Override
     public Ticket findById(int id) {
-        if (checkExistence(id)) {
-            throw new NotFoundException(USER_NOT_FOUND);
-        }
+        checkExistence(id);
         return tickets.findById(id);
     }
 
     @Override
     public void edit(int id, Ticket entity) {
-        if (checkExistence(id)) {
-            throw new NotFoundException(USER_NOT_FOUND);
-        }
+        checkExistence(id);
         if (!tickets.edit(id, entity)) {
             throw new BadRequestException("Invalid ticket data");
         }
@@ -55,13 +51,13 @@ public class TicketServiceImpl implements com.cursor.service.interfaces.TicketSe
 
     @Override
     public void delete(int id) {
-        if (checkExistence(id)) {
-            throw new NotFoundException(USER_NOT_FOUND);
-        }
+        checkExistence(id);
         tickets.delete(id);
     }
 
-    private boolean checkExistence(int id) {
-        return tickets.findById(id) == null;
+    private void checkExistence(int id) {
+        if (tickets.findById(id) == null) {
+            throw new NotFoundException("The user was not found");
+        }
     }
 }
