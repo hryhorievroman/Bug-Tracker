@@ -86,8 +86,9 @@ public class UserServiceImpl implements UserService {
         List<User> userList = users.getAll();
         for (User user : userList) {
             if (user.getUsername().equals(userName) && user.getPassword().equals(password)) {
-                throw new BadRequestException("Username or password is incorrect");
+                return;
             }
         }
+        throw new BadRequestException("Username or password is incorrect");
     }
 }
