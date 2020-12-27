@@ -1,18 +1,18 @@
 package com.cursor.model;
 
 public class User {
-    private static int id;
+    private int id;
     private String password;
     private String username;
 
     public User() {
-        id++;
+
     }
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-        id++;
+
     }
 
     public String getPassword() {
@@ -31,7 +31,21 @@ public class User {
         this.username = username;
     }
 
-    public static int getId() {
+    public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                '}';
+    }
+
 }

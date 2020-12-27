@@ -3,25 +3,37 @@ package com.cursor.dao.impls;
 import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class UserDao implements CRUD<User> {
-    private final Map<Integer, User> users = new HashMap<>();
     private static UserDao instance;
+    private final Map<Integer, User> users = new HashMap<>();
 
     private UserDao() {
     }
 
+    public static UserDao getInstance() {
+        if (instance == null) {
+            instance = new UserDao();
+        }
+        return instance;
+    }
+
     @Override
     public boolean create(User entity) {
-        return users.put(User.getId(), entity) != null;
+        List<User> usersList = getAll();
+        if (users.size() > 0) {
+            User user = usersList.stream().max(Comparator.comparing(User::getId)).get();
+            entity.setId(user.getId() + 1);
+        } else {
+            entity.setId(1);
+        }
+        return users.put(entity.getId(), entity) != null;
     }
 
     @Override
     public List<User> getAll() {
-        return (List<User>) users.values();
+        return new ArrayList<>(users.values());
     }
 
     @Override
@@ -37,12 +49,5 @@ public final class UserDao implements CRUD<User> {
     @Override
     public boolean delete(int id) {
         return users.remove(id) != null;
-    }
-
-    public static UserDao getInstance() {
-        if (instance == null) {
-            instance = new UserDao();
-        }
-        return instance;
     }
 }
