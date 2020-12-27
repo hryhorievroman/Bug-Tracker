@@ -7,8 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TicketDao implements CRUD<Ticket> {
+public final class TicketDao implements CRUD<Ticket> {
     private final Map<Integer, Ticket> tickets = new HashMap<>();
+    private static TicketDao instance;
+
+    private TicketDao() {
+    }
 
     @Override
     public boolean create(Ticket entity) {
@@ -33,5 +37,12 @@ public class TicketDao implements CRUD<Ticket> {
     @Override
     public boolean delete(int id) {
         return tickets.remove(id) != null;
+    }
+
+    public static TicketDao getInstance() {
+        if (instance == null) {
+            instance = new TicketDao();
+        }
+        return instance;
     }
 }

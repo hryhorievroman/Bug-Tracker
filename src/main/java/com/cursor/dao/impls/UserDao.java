@@ -7,8 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UserDao implements CRUD<User> {
+public final class UserDao implements CRUD<User> {
     private final Map<Integer, User> users = new HashMap<>();
+    private static UserDao instance;
+
+    private UserDao() {
+    }
 
     @Override
     public boolean create(User entity) {
@@ -33,5 +37,12 @@ public class UserDao implements CRUD<User> {
     @Override
     public boolean delete(int id) {
         return users.remove(id) != null;
+    }
+
+    public static UserDao getInstance() {
+        if (instance == null) {
+            instance = new UserDao();
+        }
+        return instance;
     }
 }
