@@ -24,7 +24,7 @@ public final class TicketDao implements CRUD<Ticket> {
 
     @Override
     public boolean create(Ticket entity) {
-        return tickets.put(entity.getId(), entity) != null;
+        return tickets.put(entity.getId(), entity) == null;
     }
 
     @Override

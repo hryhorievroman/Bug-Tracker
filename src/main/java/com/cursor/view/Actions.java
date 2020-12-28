@@ -81,7 +81,7 @@ public class Actions {
                 case 1 -> ticketService.create(new Ticket(inputTicketName(), inputTicketDescription(), inputTicketAssignee(), inputTicketReporter(),
                         inputTicketStatus(), inputTicketPriority(), inputTimeSpent(), inputTimeEstimated()));
                 case 2 -> {
-                    System.out.println("Lists of but tickets: ");
+                    System.out.println("Lists of bug tickets: ");
                     ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
                     System.out.println(" ");
                 }
