@@ -3,7 +3,10 @@ package com.cursor.dao.impls;
 import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class UserDao implements CRUD<User> {
     private static UserDao instance;
@@ -21,15 +24,9 @@ public final class UserDao implements CRUD<User> {
 
     @Override
     public boolean create(User entity) {
-        List<User> usersList = getAll();
-        if (users.size() > 0) {
-            User user = usersList.stream().max(Comparator.comparing(User::getId)).get();
-            entity.setId(user.getId() + 1);
-        } else {
-            entity.setId(1);
-        }
         return users.put(entity.getId(), entity) != null;
     }
+
 
     @Override
     public List<User> getAll() {
