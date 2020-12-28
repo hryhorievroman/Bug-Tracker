@@ -2,21 +2,23 @@ package com.cursor.view;
 
 import com.cursor.model.User;
 import com.cursor.service.UserServiceImpl;
+
 import java.util.Scanner;
 
 public class LoginPage {
-//   Actions actions = new Actions();
+    Actions actions = new Actions();
     UserServiceImpl userService = new UserServiceImpl();
     Scanner scanner = new Scanner(System.in);
 
     public String inputUserName() {
+        System.out.println("Please enter login: ");
         return scanner.next();
     }
 
     public String inputPassword() {
+        System.out.println("Please enter password(min 8 symbols): ");
         return scanner.next();
     }
-
 
     public void showMainMenu() {
         boolean isActive = true;
@@ -25,13 +27,11 @@ public class LoginPage {
             int menu = scanner.nextInt();
             switch (menu) {
                 case 1 -> {
-                    System.out.println("Please enter login and password(min 8 symbols)");
                     userService.registerUser(new User(inputUserName(), inputPassword()));
                     System.out.println(" ");
                     showUsersMenu();
                 }
                 case 2 -> {
-                    System.out.println("Please enter login and password(min 8 symbols)");
                     userService.loginUser(inputUserName(), inputPassword());
                     System.out.println(" ");
                     showUsersMenu();
@@ -44,7 +44,6 @@ public class LoginPage {
             }
         }
         System.out.println("Bug tracker was closed ");
-
     }
 
     public void showUsersMenu() {
@@ -78,8 +77,9 @@ public class LoginPage {
                     System.out.println("User with id " + usersID + " was deleted");
                     System.out.println(" ");
                 }
-                case 5 ->{//                       actions.showActionsMenu();
-                    System.out.println("Actions menu");
+                case 5 -> {
+                    actions.showActionsMenu();
+
                 }
                 case 0 -> isActive = false;
                 default -> {

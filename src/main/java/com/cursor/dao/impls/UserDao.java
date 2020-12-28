@@ -27,7 +27,6 @@ public final class UserDao implements CRUD<User> {
         return users.put(entity.getId(), entity) != null;
     }
 
-
     @Override
     public List<User> getAll() {
         return new ArrayList<>(users.values());

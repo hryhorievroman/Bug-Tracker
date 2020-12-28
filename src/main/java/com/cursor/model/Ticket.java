@@ -4,7 +4,8 @@ import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 
 public class Ticket {
-    private static int id;
+    private int id;
+    private static int idGenerator = 0;
     private String name;
     private String description;
     private User assignee;
@@ -15,7 +16,7 @@ public class Ticket {
     private int timeEstimated;
 
     public Ticket() {
-        id++;
+       this.id = ++idGenerator;
     }
 
     public Ticket(String name,
@@ -34,23 +35,23 @@ public class Ticket {
         this.priority = priority;
         this.timeSpent = timeSpent;
         this.timeEstimated = timeEstimated;
-        id++;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.id = ++idGenerator;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public User getAssignee() {
@@ -101,7 +102,22 @@ public class Ticket {
         this.timeEstimated = timeEstimated;
     }
 
-    public static int getId() {
+    public int getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", assignee=" + assignee +
+                ", reporter=" + reporter +
+                ", status=" + status +
+                ", priority=" + priority +
+                ", timeSpent=" + timeSpent +
+                ", timeEstimated=" + timeEstimated +
+                '}';
     }
 }
