@@ -44,7 +44,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(int id) {
         checkExistence(id);
+        System.out.println(users.findById(id).toString());
         return users.findById(id);
+
     }
 
     @Override
@@ -72,7 +74,7 @@ public class UserServiceImpl implements UserService {
         List<User> userList = users.getAll();
         for (User user : userList) {
             if (user.getUsername().equals(userName)) {
-                throw new NotFoundException("User already exists");
+                throw new BadRequestException("User already exists");
             }
         }
     }
