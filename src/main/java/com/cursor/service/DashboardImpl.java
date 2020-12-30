@@ -70,11 +70,11 @@ public class DashboardImpl implements Dashboard {
     @Override
     public String getUserStatistics(User user) {
         List<Ticket> ticketsByUser = getTicketsByUser(user);
-        var ticketsToDo = getStatusStatistics(ticketsByUser, Status.TODO);
-        var inProgressTickets = getStatusStatistics(ticketsByUser, Status.IN_PROGRESS);
-        var inReviewTickets = getStatusStatistics(ticketsByUser, Status.IN_REVIEW);
-        var approvedTickets = getStatusStatistics(ticketsByUser, Status.APPROVED);
-        var doneTickets = getStatusStatistics(ticketsByUser, Status.DONE);
+        String ticketsToDo = getStatusStatistics(ticketsByUser, Status.TODO);
+        String inProgressTickets = getStatusStatistics(ticketsByUser, Status.IN_PROGRESS);
+        String inReviewTickets = getStatusStatistics(ticketsByUser, Status.IN_REVIEW);
+        String approvedTickets = getStatusStatistics(ticketsByUser, Status.APPROVED);
+        String doneTickets = getStatusStatistics(ticketsByUser, Status.DONE);
         List<Ticket> createTickets = tickets.getAll()
                 .stream()
                 .filter(ticket -> ticket.getReporter().equals(user))
