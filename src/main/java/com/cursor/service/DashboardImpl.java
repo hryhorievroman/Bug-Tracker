@@ -4,6 +4,7 @@ import com.cursor.dao.impls.TicketDao;
 import com.cursor.dao.impls.UserDao;
 import com.cursor.model.Ticket;
 import com.cursor.model.User;
+import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.Dashboard;
@@ -69,18 +70,39 @@ public class DashboardImpl implements Dashboard {
     @Override
     public String getUserStatistics(User user) {
         List<Ticket> ticketsByUser = getTicketsByUser(user);
-        var finishedTickets = getStatusStatistics(ticketsByUser, Status.APPROVED);
-        var inProgressTickets = getStatusStatistics(ticketsByUser, Status.IN_PROGRESS);
         var ticketsToDo = getStatusStatistics(ticketsByUser, Status.TODO);
+        var inProgressTickets = getStatusStatistics(ticketsByUser, Status.IN_PROGRESS);
+        var inReviewTickets = getStatusStatistics(ticketsByUser, Status.IN_REVIEW);
+        var approvedTickets = getStatusStatistics(ticketsByUser, Status.APPROVED);
+        var doneTickets = getStatusStatistics(ticketsByUser, Status.DONE);
         List<Ticket> createTickets = tickets.getAll()
                 .stream()
                 .filter(ticket -> ticket.getReporter().equals(user))
                 .collect(Collectors.toList());
-        return "User: " + user.getUsername() +
-                "creates " + createTickets.size() + " tickets, " +
-                "works on  " + ticketsByUser.size() + " tickets. " +
-                ticketsToDo + inProgressTickets + finishedTickets;
+        return "User " + user.getUsername() +
+                " creates " + createTickets.size() + " tickets, " +
+                "works on  " + ticketsByUser.size() + " tickets. \n " +
+                ticketsToDo +
+                inProgressTickets +
+                inReviewTickets +
+                approvedTickets +
+                doneTickets;
+    }
 
+    @Override
+    public List<Ticket> getTicketsByStatus(Status status) {
+        return tickets.getAll()
+                .stream()
+                .filter(ticket -> ticket.getStatus().equals(status))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Ticket> getTicketsByPriority(Priority priority) {
+        return tickets.getAll()
+                .stream()
+                .filter(ticket -> ticket.getPriority().equals(priority))
+                .collect(Collectors.toList());
     }
 
     private String getStatusStatistics(List<Ticket> tickets, Status status) {
@@ -90,8 +112,8 @@ public class DashboardImpl implements Dashboard {
                 .collect(Collectors.teeing(
                         Collectors.counting(),
                         Collectors.toList(),
-                        (number, sortTickets) -> status.toString() + ": " + number +
-                                " tickets: " + sortTickets + "\n"));
+                        (number, sortTickets) -> status.toString() + " " + number +
+                                " tickets:  " + sortTickets.toString() + "\n"));
     }
 
 
