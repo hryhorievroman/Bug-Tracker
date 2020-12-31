@@ -7,6 +7,7 @@ import com.cursor.model.enums.Status;
 import com.cursor.service.TicketServiceImpl;
 import com.cursor.service.UserServiceImpl;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Actions {
@@ -73,38 +74,42 @@ public class Actions {
     }
 
     public void showActionsMenu() {
-        boolean isActiveMenu = true;
-        while (isActiveMenu) {
-            showTicketsMenu();
-            int menu = scanner.nextInt();
-            switch (menu) {
-                case 1 -> ticketService.create(new Ticket(inputTicketName(), inputTicketDescription(), inputTicketAssignee(), inputTicketReporter(),
-                        inputTicketStatus(), inputTicketPriority(), inputTimeSpent(), inputTimeEstimated()));
-                case 2 -> {
-                    System.out.println("Lists of bug tickets: ");
-                    ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
-                    System.out.println(" ");
+        try {
+            boolean isActiveMenu = true;
+            while (isActiveMenu) {
+                showTicketsMenu();
+                int menu = scanner.nextInt();
+                switch (menu) {
+                    case 1 -> ticketService.create(new Ticket(inputTicketName(), inputTicketDescription(), inputTicketAssignee(), inputTicketReporter(),
+                            inputTicketStatus(), inputTicketPriority(), inputTimeSpent(), inputTimeEstimated()));
+                    case 2 -> {
+                        System.out.println("Lists of bug tickets: ");
+                        ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
+                        System.out.println(" ");
+                    }
+                    case 3 -> {
+                        System.out.println("For search please enter bug ticket's ID: ");
+                        int ticketID = scanner.nextInt();
+                        ticketService.findById(ticketID);
+                        System.out.println(" ");
+                    }
+                    case 4 -> {
+                        int ticketID = scanner.nextInt();
+                        ticketService.edit(ticketID, new Ticket());
+                    }
+                    case 5 -> {
+                        System.out.println("For delete bug ticket please enter bug ticket's ID: ");
+                        int ticketID = scanner.nextInt();
+                        ticketService.delete(ticketID);
+                        System.out.println("Bug ticket with id " + ticketID + " was deleted");
+                        System.out.println(" ");
+                    }
+                    case 0 -> isActiveMenu = false;
+                    default -> System.out.println("Wrong number, please enter a number 0-5:");
                 }
-                case 3 -> {
-                    System.out.println("For search please enter bug ticket's ID: ");
-                    int ticketID = scanner.nextInt();
-                    ticketService.findById(ticketID);
-                    System.out.println(" ");
-                }
-                case 4 -> {
-                    int ticketID = scanner.nextInt();
-                    ticketService.edit(ticketID, new Ticket());
-                }
-                case 5 -> {
-                    System.out.println("For delete bug ticket please enter bug ticket's ID: ");
-                    int ticketID = scanner.nextInt();
-                    ticketService.delete(ticketID);
-                    System.out.println("Bug ticket with id " + ticketID + " was deleted");
-                    System.out.println(" ");
-                }
-                case 0 -> isActiveMenu = false;
-                default -> System.out.println("Wrong number, please enter a number 0-5:");
             }
+        } catch (InputMismatchException e) {
+            System.out.println("Wrong input, please use numbers");
         }
     }
 

@@ -3,9 +3,11 @@ package com.cursor.view;
 import com.cursor.model.User;
 import com.cursor.service.UserServiceImpl;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class LoginPage {
+
     Actions actions = new Actions();
     UserServiceImpl userService = new UserServiceImpl();
     Scanner scanner = new Scanner(System.in);
@@ -21,29 +23,33 @@ public class LoginPage {
     }
 
     public void showMainMenu() {
-        boolean isActive = true;
-        while (isActive) {
-            showUnregisteredMenu();
-            int menu = scanner.nextInt();
-            switch (menu) {
-                case 1 -> {
-                    userService.registerUser(new User(inputUserName(), inputPassword()));
-                    System.out.println(" ");
-                    showUsersMenu();
-                }
-                case 2 -> {
-                    userService.loginUser(inputUserName(), inputPassword());
-                    System.out.println(" ");
-                    showUsersMenu();
-                }
-                case 0 -> isActive = false;
-                default -> {
-                    System.out.println("Wrong number, please enter number 0-2");
-                    showMainMenu();
+        try {
+            boolean isActive = true;
+            while (isActive) {
+                showUnregisteredMenu();
+                int menu = scanner.nextInt();
+                switch (menu) {
+                    case 1 -> {
+                        userService.registerUser(new User((inputUserName()), inputPassword()));
+                        System.out.println(" ");
+                        showUsersMenu();
+                    }
+                    case 2 -> {
+                        userService.loginUser(inputUserName(), inputPassword());
+                        System.out.println(" ");
+                        showUsersMenu();
+                    }
+                    case 0 -> isActive = false;
+                    default -> {
+                        System.out.println("Wrong number, please enter number 0-2");
+                        showMainMenu();
+                    }
                 }
             }
+            System.out.println("Bug tracker was closed ");
+        } catch (InputMismatchException e) {
+            System.out.println("Wrong input, please use numbers");
         }
-        System.out.println("Bug tracker was closed ");
     }
 
     public void showUsersMenu() {
@@ -77,10 +83,7 @@ public class LoginPage {
                     System.out.println("User with id " + usersID + " was deleted");
                     System.out.println(" ");
                 }
-                case 5 -> {
-                    actions.showActionsMenu();
-
-                }
+                case 5 -> actions.showActionsMenu();
                 case 0 -> isActive = false;
                 default -> {
                     System.out.println("Wrong number, please enter a number 0-4: ");
