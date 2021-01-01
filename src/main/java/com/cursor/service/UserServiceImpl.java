@@ -5,7 +5,6 @@ import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.dao.impls.UserDao;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
-
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
@@ -17,8 +16,8 @@ public class UserServiceImpl implements UserService {
         checkExistence(user.getUsername());
         if (user.getUsername().isBlank() || (user.getPassword().isBlank())) {
             throw new BadRequestException("Invalid username or password");
-        } else if (user.getPassword().length() < 8) {
-            throw new BadRequestException("The password is too short");
+        } else if (user.getPassword().length() < 8 ||  user.getUsername().length() < 3) {
+            throw new BadRequestException("The username/password is too short");
         } else {
             users.create(user);
         }
@@ -44,7 +43,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(int id) {
         checkExistence(id);
-        System.out.println(users.findById(id).toString());
         return users.findById(id);
 
     }
@@ -53,7 +51,8 @@ public class UserServiceImpl implements UserService {
     public void edit(int id, User entity) {
         checkExistence(id);
         if (!users.edit(id, entity)
-                || entity.getUsername().isBlank() || entity.getPassword().isBlank()) {
+                || entity.getUsername().isBlank() || entity.getPassword().isBlank()
+                || entity.getPassword().length() < 8 || entity.getUsername().length() < 3) {
             throw new BadRequestException("Invalid user data");
         }
     }

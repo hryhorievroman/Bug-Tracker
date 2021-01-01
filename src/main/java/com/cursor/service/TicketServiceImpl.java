@@ -5,7 +5,6 @@ import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.dao.impls.TicketDao;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.TicketService;
-
 import java.util.List;
 
 public class TicketServiceImpl implements TicketService {
@@ -46,7 +45,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void checkExistence(int id) {
         if (tickets.findById(id) == null) {
-            throw new NotFoundException("The user was not found");
+            throw new NotFoundException("The ticket was not found");
         }
     }
 }

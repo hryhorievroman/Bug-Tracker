@@ -1,126 +1,172 @@
 package com.cursor.view;
 
+import com.cursor.service.exceptions.BadRequestException;
+import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.model.Ticket;
 import com.cursor.model.User;
 import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 import com.cursor.service.TicketServiceImpl;
-import com.cursor.service.UserServiceImpl;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Actions {
-    UserServiceImpl userService = new UserServiceImpl();
-    Scanner scanner = new Scanner(System.in);
-    TicketServiceImpl ticketService = new TicketServiceImpl();
-
-    public String inputTicketName() {
-        System.out.println("Bug ticket's name: ");
-        return scanner.next();
-    }
-
-    public String inputTicketDescription() {
-        System.out.println("Description: ");
-        return scanner.next();
-    }
-
-    public User inputTicketAssignee() {
-        System.out.println("User's ID to Assign: ");
-        int usersID = scanner.nextInt();
-        return userService.findById(usersID);
-    }
-
-    public User inputTicketReporter() {
-        System.out.println("User's ID for Reporter");
-        int usersID = scanner.nextInt();
-        return userService.findById(usersID);
-    }
-
-    public Status inputTicketStatus() {
-        System.out.println("Number of bug ticket Status(1 - ToDo, 2 -InProgress, 3 – In Review, 4 – Approved, 5 - Done): ");
-        int menuStatus = scanner.nextInt();
-        return switch (menuStatus) {
-            case 1 -> Status.TODO;
-            case 2 -> Status.IN_PROGRESS;
-            case 3 -> Status.IN_REVIEW;
-            case 4 -> Status.APPROVED;
-            case 5 -> Status.DONE;
-            default -> null;
-        };
-    }
-
-    public Priority inputTicketPriority() {
-        System.out.println("Number of bug ticket Priority(1 - Trivial, 2 - Minor, 3 – Major, 4 – Critical, 5 - Blocker)");
-        int menuStatus = scanner.nextInt();
-        return switch (menuStatus) {
-            case 1 -> Priority.TRIVIAL;
-            case 2 -> Priority.MINOR;
-            case 3 -> Priority.MAJOR;
-            case 4 -> Priority.CRITICAL;
-            case 5 -> Priority.BLOCKER;
-            default -> null;
-        };
-    }
-
-    public int inputTimeSpent() {
-        System.out.println("Time in hours to Time Spent");
-        return scanner.nextInt();
-    }
-
-    public int inputTimeEstimated() {
-        System.out.println("Time in hours to Time Estimated");
-        return scanner.nextInt();
-    }
+    private final TicketServiceImpl ticketService = new TicketServiceImpl();
+    private final Scanner scanner = new Scanner(System.in);
 
     public void showActionsMenu() {
-        try {
-            boolean isActiveMenu = true;
-            while (isActiveMenu) {
-                showTicketsMenu();
-                int menu = scanner.nextInt();
-                switch (menu) {
-                    case 1 -> ticketService.create(new Ticket(inputTicketName(), inputTicketDescription(), inputTicketAssignee(), inputTicketReporter(),
-                            inputTicketStatus(), inputTicketPriority(), inputTimeSpent(), inputTimeEstimated()));
-                    case 2 -> {
-                        System.out.println("Lists of bug tickets: ");
-                        ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
-                        System.out.println(" ");
-                    }
-                    case 3 -> {
-                        System.out.println("For search please enter bug ticket's ID: ");
-                        int ticketID = scanner.nextInt();
-                        ticketService.findById(ticketID);
-                        System.out.println(" ");
-                    }
-                    case 4 -> {
-                        int ticketID = scanner.nextInt();
-                        ticketService.edit(ticketID, new Ticket());
-                    }
-                    case 5 -> {
-                        System.out.println("For delete bug ticket please enter bug ticket's ID: ");
-                        int ticketID = scanner.nextInt();
-                        ticketService.delete(ticketID);
-                        System.out.println("Bug ticket with id " + ticketID + " was deleted");
-                        System.out.println(" ");
-                    }
-                    case 0 -> isActiveMenu = false;
-                    default -> System.out.println("Wrong number, please enter a number 0-5:");
+        boolean isActive = true;
+        while (isActive) {
+            showTicketsMenu();
+            int menu = LoginPage.getNum();
+            switch (menu) {
+                case 1 -> {
+                    System.out.println("Please enter a ticket's information:");
+                    Ticket ticket = new Ticket();
+                    setTicket(ticket);
+                    ticketService.create(ticket);
                 }
+                case 2 -> {
+                    System.out.println("Lists of tickets: ");
+                    ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
+                    System.out.println(" ");
+                }
+                case 3 -> {
+                    System.out.println("For search please enter ticket's ID: ");
+                    System.out.println(findTicket() + "\n");
+                }
+                case 4 -> {
+                    System.out.println("Please enter Ticket's ID to edit: ");
+                    Ticket ticket = findTicket();
+                    System.out.println("Ticket's information:\n" + ticket + "\nPlease enter the Ticket's new information");
+                    setTicket(ticket);
+                    ticketService.edit(ticket.getId(), ticket);
+                    System.out.println("The ticket was changed");
+                }
+                case 5 -> {
+                    System.out.println("For delete a ticket please enter ticket's ID: ");
+                    deleteTicket();
+                    System.out.println("The ticket was removed");
+                }
+                case 0 -> isActive = false;
+                default -> System.out.println("Wrong number, please enter a number 0-5:");
             }
-        } catch (InputMismatchException e) {
-            System.out.println("Wrong input, please use numbers");
+        }
+    }
+
+    public void setTicket(Ticket ticket) {
+        boolean wrongInfo = true;
+        while (wrongInfo) {
+            try {
+                System.out.println("Name: ");
+                String name = scanner.nextLine();
+
+                System.out.println("Description: ");
+                String description = scanner.nextLine();
+
+                System.out.println("Asignee:");
+                User asignee = LoginPage.findUser();
+
+                System.out.println("Reporter:");
+                User reporter = LoginPage.findUser();
+
+                System.out.println("Status: 1 - ToDo, 2 -InProgress, 3 – In Review, 4 – Approved, 5 - Done");
+                int statusNum = LoginPage.getNum();
+                Status status;
+
+                System.out.println("Priority: 1 - Trivial, 2 - Minor, 3 – Major, 4 – Critical, 5 - Blocker");
+                int priorityNum = LoginPage.getNum();
+                Priority priority;
+
+                System.out.println("Time spent:");
+                int timeSpent = LoginPage.getNum();
+
+                System.out.println("Time estimated:");
+                int timeEstimated = LoginPage.getNum();
+
+                if (name.isBlank() || description.isBlank()
+                        || statusNum < 1|| statusNum > 5
+                        || priorityNum < 1 || priorityNum > 5
+                        || timeSpent < 0 || timeEstimated < 0) {
+                    throw new BadRequestException("A ticket's information is incorrect");
+                }
+                else {
+                    status = switch (statusNum) {
+                        case 1 -> Status.TODO;
+                        case 2 -> Status.IN_PROGRESS;
+                        case 3 -> Status.IN_REVIEW;
+                        case 4 -> Status.APPROVED;
+                        case 5 -> Status.DONE;
+                        default -> null;
+                    };
+
+                    priority = switch (priorityNum) {
+                        case 1 -> Priority.TRIVIAL;
+                        case 2 -> Priority.MINOR;
+                        case 3 -> Priority.MAJOR;
+                        case 4 -> Priority.CRITICAL;
+                        case 5 -> Priority.BLOCKER;
+                        default -> null;
+                    };
+
+                    ticket.setName(name);
+                    ticket.setDescription(description);
+                    ticket.setAssignee(asignee);
+                    ticket.setReporter(reporter);
+                    ticket.setStatus(status);
+                    ticket.setPriority(priority);
+                    ticket.setTimeSpent(timeSpent);
+                    ticket.setTimeEstimated(timeEstimated);
+                    wrongInfo = false;
+                }
+
+            } catch (BadRequestException exception) {
+                System.out.println("Please type a ticket's information correctly:" +
+                        "\n\tDescription should NOT be empty" +
+                        "\n\tIDs values should be correct" +
+                        "\n\tEnter Status and Priority values as digits from 0 to 5" +
+                        "\n\tTime spent and Time estimated values should be larger than 0\n");
+            }
+        }
+    }
+
+    private Ticket findTicket() {
+        boolean wrongInfo = true;
+        Ticket ticket = null;
+        while (wrongInfo) {
+            try {
+                int ticketID = LoginPage.getNum();
+                ticket = ticketService.findById(ticketID);
+                wrongInfo = false;
+            } catch (NotFoundException exception) {
+                System.out.println("[...The ticket with such ID wasn't found. Please enter ID again...]");
+            }
+        }
+        return ticket;
+    }
+
+    private void deleteTicket() {
+        boolean wrongInfo = true;
+        while (wrongInfo) {
+            try {
+                Ticket ticket = findTicket();
+                ticketService.delete(ticket.getId());
+                wrongInfo = false;
+            }
+            catch (NotFoundException exception) {
+                System.out.println("[...The ticket with such ID wasn't found. Please enter ID again...]");
+            }
         }
     }
 
     private void showTicketsMenu() {
         System.out.println("============Ticket menu=============");
         System.out.println("Please choose next: ");
-        System.out.println("'1' - Create new bug-ticket ");
-        System.out.println("'2' - Show all bug-tickets");
-        System.out.println("'3' - Find bug-ticket by ID");
-        System.out.println("'4' - Edit bug-ticket by ID ");
-        System.out.println("'5' - Delete bug-ticket by ID");
+        System.out.println("'1' - Create new ticket ");
+        System.out.println("'2' - Show all tickets");
+        System.out.println("'3' - Find ticket by ID");
+        System.out.println("'4' - Edit ticket by ID ");
+        System.out.println("'5' - Delete ticket by ID");
         System.out.println("'0' - Back to User's menu");
     }
 }
