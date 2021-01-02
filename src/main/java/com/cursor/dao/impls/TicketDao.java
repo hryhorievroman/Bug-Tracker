@@ -3,25 +3,33 @@ package com.cursor.dao.impls;
 import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.Ticket;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class TicketDao implements CRUD<Ticket> {
-    private final Map<Integer, Ticket> tickets = new HashMap<>();
     private static TicketDao instance;
+    private final Map<Integer, Ticket> tickets = new HashMap<>();
 
     private TicketDao() {
     }
 
+    public static TicketDao getInstance() {
+        if (instance == null) {
+            instance = new TicketDao();
+        }
+        return instance;
+    }
+
     @Override
     public boolean create(Ticket entity) {
-        return tickets.put(Ticket.getId(), entity) != null;
+        return tickets.put(entity.getId(), entity) == null;
     }
 
     @Override
     public List<Ticket> getAll() {
-        return (List<Ticket>) tickets.values();
+        return new ArrayList<>(tickets.values());
     }
 
     @Override
@@ -37,12 +45,5 @@ public final class TicketDao implements CRUD<Ticket> {
     @Override
     public boolean delete(int id) {
         return tickets.remove(id) != null;
-    }
-
-    public static TicketDao getInstance() {
-        if (instance == null) {
-            instance = new TicketDao();
-        }
-        return instance;
     }
 }
