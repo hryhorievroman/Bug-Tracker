@@ -167,7 +167,6 @@ public class Actions {
         return userService.findById(UserID);
     }
 
-
     private void showDashboardMenu() {
         System.out.println("============Dashboard menu=============");
         System.out.println("Please choose next: ");
@@ -181,7 +180,6 @@ public class Actions {
         System.out.println("'8' - Find tickets with special priority");
         System.out.println("'0' - Back to Ticket's menu");
     }
-
 
     private void showTicketsMenu() {
         System.out.println("============Ticket menu=============");

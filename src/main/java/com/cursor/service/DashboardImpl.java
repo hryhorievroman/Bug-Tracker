@@ -115,6 +115,4 @@ public class DashboardImpl implements Dashboard {
                         (number, sortTickets) -> status.toString() + " " + number +
                                 " tickets:  " + sortTickets.toString() + "\n"));
     }
-
-
 }
