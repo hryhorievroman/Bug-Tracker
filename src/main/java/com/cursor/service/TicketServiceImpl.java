@@ -45,7 +45,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void checkExistence(int id) {
         if (tickets.findById(id) == null) {
-            throw new NotFoundException("The ticket was not found");
+            throw new NotFoundException();
         }
     }
 }

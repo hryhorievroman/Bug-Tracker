@@ -18,7 +18,7 @@ public class Actions {
         boolean isActive = true;
         while (isActive) {
             showTicketsMenu();
-            int menu = LoginPage.getNum();
+            int menu = Utils.getNum();
             switch (menu) {
                 case 1 -> {
                     System.out.println("Please enter a ticket's information:");
@@ -65,24 +65,24 @@ public class Actions {
                 String description = scanner.nextLine();
 
                 System.out.println("Asignee:");
-                User asignee = LoginPage.findUser();
+                User asignee = Utils.findUser();
 
                 System.out.println("Reporter:");
-                User reporter = LoginPage.findUser();
+                User reporter = Utils.findUser();
 
                 System.out.println("Status: 1 - ToDo, 2 -InProgress, 3 – In Review, 4 – Approved, 5 - Done");
-                int statusNum = LoginPage.getNum();
+                int statusNum = Utils.getNum();
                 Status status;
 
                 System.out.println("Priority: 1 - Trivial, 2 - Minor, 3 – Major, 4 – Critical, 5 - Blocker");
-                int priorityNum = LoginPage.getNum();
+                int priorityNum = Utils.getNum();
                 Priority priority;
 
                 System.out.println("Time spent:");
-                int timeSpent = LoginPage.getNum();
+                int timeSpent = Utils.getNum();
 
                 System.out.println("Time estimated:");
-                int timeEstimated = LoginPage.getNum();
+                int timeEstimated = Utils.getNum();
 
                 if (name.isBlank() || description.isBlank()
                         || statusNum < 1|| statusNum > 5
@@ -135,7 +135,7 @@ public class Actions {
         Ticket ticket = null;
         while (wrongInfo) {
             try {
-                int ticketID = LoginPage.getNum();
+                int ticketID = Utils.getNum();
                 ticket = ticketService.findById(ticketID);
                 wrongInfo = false;
             } catch (NotFoundException exception) {

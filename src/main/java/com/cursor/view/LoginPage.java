@@ -8,16 +8,17 @@ import java.util.Scanner;
 
 public class LoginPage {
     public static final UserServiceImpl userService = new UserServiceImpl();
-    public static final String USER_NOT_FOUND = "[...The user with such ID wasn't found. Please enter ID again...]";
     private final Actions actions = new Actions();
     private final Scanner scanner = new Scanner(System.in);
+    private boolean isActive;
+    private boolean wrongInfo;
 
     public void showMainMenu() {
-        boolean isActive = true;
+        isActive = true;
 
         while (isActive) {
             showUnregisteredMenu();
-            int menu = getNum();
+            int menu = Utils.getNum();
             switch (menu) {
                 case 1 -> {
                     registerUser();
@@ -29,12 +30,11 @@ public class LoginPage {
                 }
                 case 0 -> isActive = false;
                 default -> {
-                    System.out.println("Wrong number, please enter number 0-2");
+                    System.out.println("[...Wrong number, please enter number from 0 to 2...]");
                     showMainMenu();
                 }
             }
         }
-        System.out.println("Bug tracker was closed ");
     }
 
     public String inputUserName() {
@@ -48,18 +48,18 @@ public class LoginPage {
     }
 
     public void showUsersMenu() {
-        boolean isActive = true;
+        isActive = true;
         while (isActive) {
             showRegisteredMenu();
-            int menu1 = getNum();
-            switch (menu1) {
+            int action = Utils.getNum();
+            switch (action) {
                 case 1 -> {
                     System.out.println("Lists of users: ");
                     userService.getAll().forEach(user -> System.out.println(user.toString()));
                 }
                 case 2 -> {
                     System.out.println("For search please enter User's ID: ");
-                    User user = findUser();
+                    User user = Utils.findUser();
                     System.out.println(user + "\n");
                 }
                 case 3 -> {
@@ -70,11 +70,12 @@ public class LoginPage {
                 case 4 -> {
                     System.out.println("For delete User please enter User's ID: ");
                     deleteUser();
+                    isActive = false;
                 }
                 case 5 -> actions.showActionsMenu();
                 case 0 -> isActive = false;
                 default -> {
-                    System.out.println("Wrong number, please enter a number 0-4: ");
+                    System.out.println("[...Wrong number, please enter a number from 0 to 4...]");
                     showUsersMenu();
                 }
             }
@@ -100,25 +101,8 @@ public class LoginPage {
         System.out.println("'0' - Back to main menu");
     }
 
-    public static int getNum() {
-        int number = -1;
-        boolean wrongInfo = true;
-        while (wrongInfo) {
-            try {
-                Scanner newScan = new Scanner(System.in);
-                String line = newScan.nextLine();
-                number = Integer.parseInt(line);
-                wrongInfo = false;
-            }
-            catch (NumberFormatException exception) {
-                System.out.println("Only digits are acceptable. Please enter some number");
-            }
-        }
-        return number;
-    }
-
     private void registerUser() {
-        boolean wrongInfo = true;
+        wrongInfo = true;
         while (wrongInfo) {
             try {
                 userService.registerUser(new User(inputUserName(), inputPassword()));
@@ -130,7 +114,7 @@ public class LoginPage {
     }
 
     private void loginUser() {
-        boolean wrongInfo = true;
+        wrongInfo = true;
         while (wrongInfo) {
             try {
                 userService.loginUser(inputUserName(), inputPassword());
@@ -141,25 +125,9 @@ public class LoginPage {
         }
     }
 
-    public static User findUser() {
-        boolean wrongInfo = true;
-        User user = null;
-        while (wrongInfo) {
-            try {
-                int usersID = getNum();
-                user = userService.findById(usersID);
-                wrongInfo = false;
-            }
-            catch (NotFoundException exception) {
-                System.out.println(USER_NOT_FOUND);
-            }
-        }
-        return user;
-    }
-
     private void editUser() {
-        boolean wrongInfo = true;
-        User newUser = findUser();
+        wrongInfo = true;
+        User newUser = Utils.findUser();
         int usersID = newUser.getId();
         while (wrongInfo) {
             try {
@@ -172,22 +140,22 @@ public class LoginPage {
                 System.out.println("[...Username should NOT be empty. Password must contain at least 8 characters. Please set ID and new information again...]");
             }
             catch (NotFoundException exception) {
-                System.out.println(USER_NOT_FOUND);
+                System.out.println(exception.getErrorMessage());
             }
         }
     }
 
     private void deleteUser() {
-        User newUser = findUser();
+        User newUser = Utils.findUser();
         int usersID = newUser.getId();
-        boolean wrongInfo = true;
+        wrongInfo = true;
         while (wrongInfo) {
             try {
                 userService.delete(usersID);
                 wrongInfo = false;
             }
             catch (NotFoundException exception) {
-                System.out.println(USER_NOT_FOUND);
+                System.out.println(exception.getErrorMessage());
             }
         }
         System.out.println("User with id " + usersID + " was deleted\n");

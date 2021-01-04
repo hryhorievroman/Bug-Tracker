@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     private void checkExistence(int id) {
         if (users.findById(id) == null) {
-            throw new NotFoundException("The user was not found");
+            throw new NotFoundException();
         }
     }
 
