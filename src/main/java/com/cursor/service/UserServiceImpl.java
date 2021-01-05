@@ -3,6 +3,7 @@ package com.cursor.service;
 import com.cursor.model.User;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.dao.impls.UserDao;
+import com.cursor.service.exceptions.ErrorMessage;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
 import java.util.List;
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     private void checkExistence(int id) {
         if (users.findById(id) == null) {
-            throw new NotFoundException();
+            throw new NotFoundException(ErrorMessage.NOT_FOUND.getErrorMessage());
         }
     }
 
