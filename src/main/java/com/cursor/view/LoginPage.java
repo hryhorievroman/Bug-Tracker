@@ -1,6 +1,7 @@
 package com.cursor.view;
 
 import com.cursor.model.User;
+import com.cursor.model.enums.Message;
 import com.cursor.service.UserServiceImpl;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.NotFoundException;
@@ -128,7 +129,7 @@ public class LoginPage {
                 userService.registerUser(new User(userName, password));
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
-                System.out.println("[...Username must contain at least 3 symbols. Password must contain at least 8 symbols...]");
+                System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
             }
         }
 

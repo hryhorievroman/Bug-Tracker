@@ -8,13 +8,13 @@ import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 import com.cursor.service.TicketServiceImpl;
 import com.cursor.service.interfaces.TicketService;
+import com.cursor.model.enums.Message;
 
 import java.util.Scanner;
 
 public class Actions {
     private final TicketService ticketService = new TicketServiceImpl();
     private final Scanner scanner = new Scanner(System.in);
-    private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
 
     public void showActionsMenu() {
         boolean isActive = true;
@@ -23,7 +23,7 @@ public class Actions {
             int menu = Utils.getNum();
             switch (menu) {
                 case 1 -> {
-                    System.out.println("Please enter a ticket's information: " + TYPE_TO_EXIT + ":");
+                    System.out.println("Please enter a ticket's information: " + Message.TYPE_TO_EXIT.getMessage() + ":");
                     Ticket ticket = new Ticket();
                     setTicket(ticket);
                     if (ticket != null) {
@@ -37,11 +37,11 @@ public class Actions {
                     System.out.println("");
                 }
                 case 3 -> {
-                    System.out.println("For search please enter ticket's ID: " + TYPE_TO_EXIT + ":");
+                    System.out.println("For search please enter ticket's ID: " + Message.TYPE_TO_EXIT.getMessage() + ":");
                     System.out.println(findTicket() + "\n");
                 }
                 case 4 -> {
-                    System.out.println("Please enter Ticket's ID to edit: " + TYPE_TO_EXIT + ":");
+                    System.out.println("Please enter Ticket's ID to edit: " + Message.TYPE_TO_EXIT.getMessage() + ":");
                     Ticket ticket = findTicket();
                     if (ticket != null) {
                         System.out.println("Ticket's information:\n" + ticket + "\nPlease enter the Ticket's new information");
@@ -51,7 +51,7 @@ public class Actions {
                     }
                 }
                 case 5 -> {
-                    System.out.println("For delete a ticket please enter ticket's ID: " + TYPE_TO_EXIT + ":");
+                    System.out.println("For delete a ticket please enter ticket's ID: " + Message.TYPE_TO_EXIT.getMessage() + ":");
                     if (deleteTicket()) {
                         System.out.println("The ticket was removed");
                     }

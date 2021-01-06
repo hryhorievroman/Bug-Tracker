@@ -1,6 +1,7 @@
 package com.cursor.service;
 
 import com.cursor.model.User;
+import com.cursor.model.enums.Size;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.dao.impls.UserDao;
 import com.cursor.service.exceptions.ErrorMessage;
@@ -11,13 +12,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserDao users = UserDao.getInstance();
-    private static final int PASSWORD_MIN_LENGTH = 8;
-    private static final int USERNAME_MIN_LENGTH = 3;
 
     @Override
     public void registerUser(User user) {
         checkExistence(user.getUsername());
-        if (user.getPassword().length() < PASSWORD_MIN_LENGTH ||  user.getUsername().length() < USERNAME_MIN_LENGTH) {
+        if (user.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getLength() ||  user.getUsername().length() < Size.USERNAME_MIN_LENGTH.getLength()) {
             throw new BadRequestException("The username/password is too short");
         } else {
             users.create(user);
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService {
     public void edit(int id, User entity) {
         checkExistence(id);
         if (!users.edit(id, entity)
-                || entity.getPassword().length() < PASSWORD_MIN_LENGTH || entity.getUsername().length() < USERNAME_MIN_LENGTH) {
+                || entity.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getLength() || entity.getUsername().length() < Size.USERNAME_MIN_LENGTH.getLength()) {
             throw new BadRequestException("Invalid user data");
         }
     }
