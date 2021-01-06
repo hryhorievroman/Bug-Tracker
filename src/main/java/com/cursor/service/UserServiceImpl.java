@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(User user) {
         checkExistence(user.getUsername());
-        if (user.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getLength() ||  user.getUsername().length() < Size.USERNAME_MIN_LENGTH.getLength()) {
+        if (user.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getSize() ||  user.getUsername().length() < Size.USERNAME_MIN_LENGTH.getSize()) {
             throw new BadRequestException("The username/password is too short");
         } else {
             users.create(user);
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     public void edit(int id, User entity) {
         checkExistence(id);
         if (!users.edit(id, entity)
-                || entity.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getLength() || entity.getUsername().length() < Size.USERNAME_MIN_LENGTH.getLength()) {
+                || entity.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getSize() || entity.getUsername().length() < Size.USERNAME_MIN_LENGTH.getSize()) {
             throw new BadRequestException("Invalid user data");
         }
     }

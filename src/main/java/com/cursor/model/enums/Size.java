@@ -10,7 +10,7 @@ public enum Size {
         this.length = length;
     }
 
-    public int getLength() {
+    public int getSize() {
         return length;
     }
 }

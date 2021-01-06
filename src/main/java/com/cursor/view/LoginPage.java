@@ -2,6 +2,7 @@ package com.cursor.view;
 
 import com.cursor.model.User;
 import com.cursor.model.enums.Message;
+import com.cursor.model.enums.Size;
 import com.cursor.service.UserServiceImpl;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.NotFoundException;
@@ -49,7 +50,7 @@ public class LoginPage {
     }
 
     public String inputPassword() {
-        System.out.println("Please enter password(min 8 symbols) " + TYPE_TO_EXIT + ":");
+        System.out.println("Please enter password(min " + Size.PASSWORD_MIN_LENGTH.getSize() + " symbols) " + TYPE_TO_EXIT + ":");
         return scanner.next();
     }
 
@@ -180,7 +181,7 @@ public class LoginPage {
                 wrongInfo = !wrongInfo;
             }
             catch (BadRequestException exception) {
-                System.out.println("[...Username should NOT be empty. Password must contain at least 8 characters. Please set ID and new information again...]");
+                System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
             }
             catch (NotFoundException exception) {
                 System.out.println(exception.getErrorMessage());
