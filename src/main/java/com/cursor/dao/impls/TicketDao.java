@@ -2,6 +2,7 @@ package com.cursor.dao.impls;
 
 import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.Ticket;
+import com.cursor.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,0 +1,5 @@
+
+
+private static final String userName = "roman";
+private static final String userPassword = "root";
+private static final String url = "jdbc:mysql://localhost:3306/bugtracker?serverTimezone=UTC";

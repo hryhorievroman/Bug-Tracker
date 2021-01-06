@@ -3,56 +3,53 @@ package com.cursor.view;
 import com.cursor.model.User;
 import com.cursor.service.UserServiceImpl;
 
-import java.util.InputMismatchException;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class LoginPage {
-
-    Actions actions = new Actions();
+   Actions actions = new Actions();
     UserServiceImpl userService = new UserServiceImpl();
     Scanner scanner = new Scanner(System.in);
 
     public String inputUserName() {
-        System.out.println("Please enter login: ");
         return scanner.next();
     }
 
     public String inputPassword() {
-        System.out.println("Please enter password(min 8 symbols): ");
         return scanner.next();
     }
 
-    public void showMainMenu() {
-        try {
-            boolean isActive = true;
-            while (isActive) {
-                showUnregisteredMenu();
-                int menu = scanner.nextInt();
-                switch (menu) {
-                    case 1 -> {
-                        userService.registerUser(new User((inputUserName()), inputPassword()));
-                        System.out.println(" ");
-                        showUsersMenu();
-                    }
-                    case 2 -> {
-                        userService.loginUser(inputUserName(), inputPassword());
-                        System.out.println(" ");
-                        showUsersMenu();
-                    }
-                    case 0 -> isActive = false;
-                    default -> {
-                        System.out.println("Wrong number, please enter number 0-2");
-                        showMainMenu();
-                    }
+
+    public void showMainMenu() throws SQLException, ClassNotFoundException {
+        boolean isActive = true;
+        while (isActive) {
+            showUnregisteredMenu();
+            int menu = scanner.nextInt();
+            switch (menu) {
+                case 1 -> {
+                    System.out.println("Please enter login and password(min 8 symbols)");
+                    userService.registerUser(new User(inputUserName(), inputPassword()));
+                    System.out.println(" ");
+                    showUsersMenu();
+                }
+                case 2 -> {
+                    System.out.println("Please enter login and password(min 8 symbols)");
+                    userService.loginUser(inputUserName(), inputPassword());
+                    System.out.println(" ");
+                    showUsersMenu();
+                }
+                case 0 -> isActive = false;
+                default -> {
+                    System.out.println("Wrong number, please enter number 0-2");
+                    showMainMenu();
                 }
             }
-            System.out.println("Bug tracker was closed ");
-        } catch (InputMismatchException e) {
-            System.out.println("Wrong input, please use numbers");
         }
+        System.out.println("Bug tracker was closed ");
+
     }
 
-    public void showUsersMenu() {
+    public void showUsersMenu() throws SQLException, ClassNotFoundException {
         boolean isActive = true;
         while (isActive) {
             showRegisteredMenu();
@@ -83,7 +80,9 @@ public class LoginPage {
                     System.out.println("User with id " + usersID + " was deleted");
                     System.out.println(" ");
                 }
-                case 5 -> actions.showActionsMenu();
+                case 5 ->{ actions.showActionsMenu();
+                    System.out.println("Actions menu");
+                }
                 case 0 -> isActive = false;
                 default -> {
                     System.out.println("Wrong number, please enter a number 0-4: ");

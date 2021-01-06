@@ -71,6 +71,7 @@ public class Ticket {
     }
 
     public Status getStatus() {
+
         return status;
     }
 

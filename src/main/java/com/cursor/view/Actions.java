@@ -7,6 +7,7 @@ import com.cursor.model.enums.Status;
 import com.cursor.service.TicketServiceImpl;
 import com.cursor.service.UserServiceImpl;
 
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -25,13 +26,13 @@ public class Actions {
         return scanner.next();
     }
 
-    public User inputTicketAssignee() {
+    public User inputTicketAssignee() throws SQLException, ClassNotFoundException {
         System.out.println("User's ID to Assign: ");
         int usersID = scanner.nextInt();
         return userService.findById(usersID);
     }
 
-    public User inputTicketReporter() {
+    public User inputTicketReporter() throws SQLException, ClassNotFoundException {
         System.out.println("User's ID for Reporter");
         int usersID = scanner.nextInt();
         return userService.findById(usersID);
@@ -110,6 +111,10 @@ public class Actions {
             }
         } catch (InputMismatchException e) {
             System.out.println("Wrong input, please use numbers");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
