@@ -8,10 +8,6 @@ import java.util.Scanner;
 
 public class Utils {
 
-    public static final UserServiceImpl userService = new UserServiceImpl();
-
-    public Utils() { }
-
     public static int getNum() {
         int number = -1;
         boolean wrongInfo = true;
@@ -19,7 +15,9 @@ public class Utils {
             try {
                 Scanner newScan = new Scanner(System.in);
                 String line = newScan.nextLine();
-                number = Integer.parseInt(line);
+                if (!isExit(line)) {
+                    number = Integer.parseInt(line);
+                }
                 wrongInfo = false;
             }
             catch (NumberFormatException exception) {
@@ -34,8 +32,10 @@ public class Utils {
         User user = null;
         while (wrongInfo) {
             try {
-                int usersID = getNum();
-                user = userService.findById(usersID);
+                int userID = getNum();
+                if (userID != -1) {
+                    user = new UserServiceImpl().findById(userID);
+                }
                 wrongInfo = false;
             }
             catch (NotFoundException exception) {
@@ -43,5 +43,9 @@ public class Utils {
             }
         }
         return user;
+    }
+
+    public static boolean isExit(String line) {
+        return line.matches("[Ee][Xx][Ii][Tt]");
     }
 }

@@ -11,13 +11,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserDao users = UserDao.getInstance();
+    private static final int PASSWORD_MIN_LENGTH = 8;
+    private static final int USERNAME_MIN_LENGTH = 3;
 
     @Override
     public void registerUser(User user) {
         checkExistence(user.getUsername());
-        if (user.getUsername().isBlank() || (user.getPassword().isBlank())) {
-            throw new BadRequestException("Invalid username or password");
-        } else if (user.getPassword().length() < 8 ||  user.getUsername().length() < 3) {
+        if (user.getPassword().length() < PASSWORD_MIN_LENGTH ||  user.getUsername().length() < USERNAME_MIN_LENGTH) {
             throw new BadRequestException("The username/password is too short");
         } else {
             users.create(user);
@@ -45,15 +45,13 @@ public class UserServiceImpl implements UserService {
     public User findById(int id) {
         checkExistence(id);
         return users.findById(id);
-
     }
 
     @Override
     public void edit(int id, User entity) {
         checkExistence(id);
         if (!users.edit(id, entity)
-                || entity.getUsername().isBlank() || entity.getPassword().isBlank()
-                || entity.getPassword().length() < 8 || entity.getUsername().length() < 3) {
+                || entity.getPassword().length() < PASSWORD_MIN_LENGTH || entity.getUsername().length() < USERNAME_MIN_LENGTH) {
             throw new BadRequestException("Invalid user data");
         }
     }

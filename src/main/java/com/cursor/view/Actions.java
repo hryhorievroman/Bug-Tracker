@@ -7,12 +7,14 @@ import com.cursor.model.User;
 import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 import com.cursor.service.TicketServiceImpl;
+import com.cursor.service.interfaces.TicketService;
 
 import java.util.Scanner;
 
 public class Actions {
-    private final TicketServiceImpl ticketService = new TicketServiceImpl();
+    private final TicketService ticketService = new TicketServiceImpl();
     private final Scanner scanner = new Scanner(System.in);
+    private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
 
     public void showActionsMenu() {
         boolean isActive = true;
@@ -21,32 +23,38 @@ public class Actions {
             int menu = Utils.getNum();
             switch (menu) {
                 case 1 -> {
-                    System.out.println("Please enter a ticket's information:");
+                    System.out.println("Please enter a ticket's information: " + TYPE_TO_EXIT + ":");
                     Ticket ticket = new Ticket();
                     setTicket(ticket);
-                    ticketService.create(ticket);
+                    if (ticket != null) {
+                        ticketService.create(ticket);
+                        System.out.println("The ticket was created");
+                    }
                 }
                 case 2 -> {
                     System.out.println("Lists of tickets: ");
                     ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
-                    System.out.println(" ");
+                    System.out.println("");
                 }
                 case 3 -> {
-                    System.out.println("For search please enter ticket's ID: ");
+                    System.out.println("For search please enter ticket's ID: " + TYPE_TO_EXIT + ":");
                     System.out.println(findTicket() + "\n");
                 }
                 case 4 -> {
-                    System.out.println("Please enter Ticket's ID to edit: ");
+                    System.out.println("Please enter Ticket's ID to edit: " + TYPE_TO_EXIT + ":");
                     Ticket ticket = findTicket();
-                    System.out.println("Ticket's information:\n" + ticket + "\nPlease enter the Ticket's new information");
-                    setTicket(ticket);
-                    ticketService.edit(ticket.getId(), ticket);
-                    System.out.println("The ticket was changed");
+                    if (ticket != null) {
+                        System.out.println("Ticket's information:\n" + ticket + "\nPlease enter the Ticket's new information");
+                        setTicket(ticket);
+                        ticketService.edit(ticket.getId(), ticket);
+                        System.out.println("The ticket was changed");
+                    }
                 }
                 case 5 -> {
-                    System.out.println("For delete a ticket please enter ticket's ID: ");
-                    deleteTicket();
-                    System.out.println("The ticket was removed");
+                    System.out.println("For delete a ticket please enter ticket's ID: " + TYPE_TO_EXIT + ":");
+                    if (deleteTicket()) {
+                        System.out.println("The ticket was removed");
+                    }
                 }
                 case 0 -> isActive = false;
                 default -> System.out.println("Wrong number, please enter a number 0-5:");
@@ -55,34 +63,67 @@ public class Actions {
     }
 
     public void setTicket(Ticket ticket) {
-        boolean wrongInfo = true;
-        while (wrongInfo) {
+        boolean wrongInfo = false;
+        while (!wrongInfo) {
             try {
                 System.out.println("Name: ");
                 String name = scanner.nextLine();
 
+                if (Utils.isExit(name)) {
+                    return;
+                }
+
                 System.out.println("Description: ");
                 String description = scanner.nextLine();
+
+                if (Utils.isExit(description)) {
+                    return;
+                }
 
                 System.out.println("Asignee:");
                 User asignee = Utils.findUser();
 
+                if (asignee == null) {
+                    return;
+                }
+
                 System.out.println("Reporter:");
                 User reporter = Utils.findUser();
 
+                if (reporter == null) {
+                    return;
+                }
+
                 System.out.println("Status: 1 - ToDo, 2 -InProgress, 3 – In Review, 4 – Approved, 5 - Done");
-                int statusNum = Utils.getNum();
                 Status status;
+                int statusNum = Utils.getNum();
+
+                if (statusNum == -1) {
+                    return;
+                }
+
 
                 System.out.println("Priority: 1 - Trivial, 2 - Minor, 3 – Major, 4 – Critical, 5 - Blocker");
-                int priorityNum = Utils.getNum();
                 Priority priority;
+                int priorityNum = Utils.getNum();
+
+                if (priorityNum == -1) {
+                    return;
+                }
 
                 System.out.println("Time spent:");
                 int timeSpent = Utils.getNum();
 
+                if (timeSpent == -1) {
+                    return;
+                }
+
                 System.out.println("Time estimated:");
                 int timeEstimated = Utils.getNum();
+
+                if (timeEstimated == -1) {
+                    return;
+                }
 
                 if (name.isBlank() || description.isBlank()
                         || statusNum < 1|| statusNum > 5
@@ -108,7 +149,6 @@ public class Actions {
                         case 5 -> Priority.BLOCKER;
                         default -> null;
                     };
-
                     ticket.setName(name);
                     ticket.setDescription(description);
                     ticket.setAssignee(asignee);
@@ -117,9 +157,8 @@ public class Actions {
                     ticket.setPriority(priority);
                     ticket.setTimeSpent(timeSpent);
                     ticket.setTimeEstimated(timeEstimated);
-                    wrongInfo = false;
+                    wrongInfo = !wrongInfo;
                 }
-
             } catch (BadRequestException exception) {
                 System.out.println("Please type a ticket's information correctly:" +
                         "\n\tDescription should NOT be empty" +
@@ -128,16 +167,22 @@ public class Actions {
                         "\n\tTime spent and Time estimated values should be larger than 0\n");
             }
         }
+        return;
     }
 
     private Ticket findTicket() {
-        boolean wrongInfo = true;
+        boolean wrongInfo = false;
         Ticket ticket = null;
-        while (wrongInfo) {
+        while (!wrongInfo) {
             try {
                 int ticketID = Utils.getNum();
+
+                if (ticketID == -1) {
+                    return null;
+                }
+
                 ticket = ticketService.findById(ticketID);
-                wrongInfo = false;
+                wrongInfo = !wrongInfo;
             } catch (NotFoundException exception) {
                 System.out.println("[...The ticket with such ID wasn't found. Please enter ID again...]");
             }
@@ -145,18 +190,24 @@ public class Actions {
         return ticket;
     }
 
-    private void deleteTicket() {
-        boolean wrongInfo = true;
-        while (wrongInfo) {
+    private boolean deleteTicket() {
+        boolean wrongInfo = false;
+        while (!wrongInfo) {
             try {
                 Ticket ticket = findTicket();
-                ticketService.delete(ticket.getId());
-                wrongInfo = false;
+                if (ticket != null) {
+                    ticketService.delete(ticket.getId());
+                    wrongInfo = !wrongInfo;
+                }
+                else {
+                    return false;
+                }
             }
             catch (NotFoundException exception) {
                 System.out.println("[...The ticket with such ID wasn't found. Please enter ID again...]");
             }
         }
+        return true;
     }
 
     private void showTicketsMenu() {

@@ -4,12 +4,15 @@ import com.cursor.model.User;
 import com.cursor.service.UserServiceImpl;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.NotFoundException;
+import com.cursor.service.interfaces.UserService;
+
 import java.util.Scanner;
 
 public class LoginPage {
-    public static final UserServiceImpl userService = new UserServiceImpl();
+    public static final UserService userService = new UserServiceImpl();
     private final Actions actions = new Actions();
     private final Scanner scanner = new Scanner(System.in);
+    private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
     private boolean isActive;
     private boolean wrongInfo;
 
@@ -21,12 +24,14 @@ public class LoginPage {
             int menu = Utils.getNum();
             switch (menu) {
                 case 1 -> {
-                    registerUser();
-                    showUsersMenu();
+                    if (registerUser()) {
+                        showUsersMenu();
+                    }
                 }
                 case 2 -> {
-                    loginUser();
-                    showUsersMenu();
+                    if (loginUser()) {
+                        showUsersMenu();
+                    }
                 }
                 case 0 -> isActive = false;
                 default -> {
@@ -38,12 +43,12 @@ public class LoginPage {
     }
 
     public String inputUserName() {
-        System.out.println("Please enter login: ");
+        System.out.println("Please enter login " + TYPE_TO_EXIT + ":");
         return scanner.next();
     }
 
     public String inputPassword() {
-        System.out.println("Please enter password(min 8 symbols): ");
+        System.out.println("Please enter password(min 8 symbols) " + TYPE_TO_EXIT + ":");
         return scanner.next();
     }
 
@@ -58,22 +63,24 @@ public class LoginPage {
                     userService.getAll().forEach(user -> System.out.println(user.toString()));
                 }
                 case 2 -> {
-                    System.out.println("For search please enter User's ID: ");
+                    System.out.println("For search please enter User's ID " + TYPE_TO_EXIT + ":");
                     User user = Utils.findUser();
-                    System.out.println(user + "\n");
+                    if (user != null) {
+                        System.out.println(user + "\n");
+                    }
                 }
                 case 3 -> {
-                    System.out.println("Please enter User's ID to edit Name and Password: ");
+                    System.out.println("Please enter User's ID to edit Name and Password " + TYPE_TO_EXIT + ":");
                     editUser();
-                    System.out.println("User's name and password was changed");
                 }
                 case 4 -> {
-                    System.out.println("For delete User please enter User's ID: ");
-                    deleteUser();
-                    isActive = false;
+                    System.out.println("For delete User please enter User's ID " + TYPE_TO_EXIT + ":");
+                    if (deleteUser()) {
+                        isActive = false;
+                    }
                 }
                 case 5 -> actions.showActionsMenu();
-                case 0 -> isActive = false;
+                case 0 -> showMainMenu();
                 default -> {
                     System.out.println("[...Wrong number, please enter a number from 0 to 4...]");
                     showUsersMenu();
@@ -98,43 +105,78 @@ public class LoginPage {
         System.out.println("'3' - Edit users name and password by ID");
         System.out.println("'4' - Delete user");
         System.out.println("'5' - Ticket menu");
-        System.out.println("'0' - Back to main menu");
+        System.out.println("'0' - Log out");
     }
 
-    private void registerUser() {
-        wrongInfo = true;
-        while (wrongInfo) {
+    private boolean registerUser() {
+
+        wrongInfo = false;
+
+        while (!wrongInfo) {
+
+            String userName = inputUserName();
+            if (Utils.isExit(userName)) {
+                return false;
+            }
+
+            String password = inputPassword();
+            if (Utils.isExit(password)) {
+                return false;
+            }
+
             try {
-                userService.registerUser(new User(inputUserName(), inputPassword()));
-                wrongInfo = false;
+                userService.registerUser(new User(userName, password));
+                wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
-                System.out.println("[...Username should NOT be empty. Password must contain at least 8 characters...]");
+                System.out.println("[...Username must contain at least 3 symbols. Password must contain at least 8 symbols...]");
             }
         }
+
+        return true;
     }
 
-    private void loginUser() {
-        wrongInfo = true;
-        while (wrongInfo) {
+    private boolean loginUser() {
+
+        wrongInfo = false;
+
+        while (!wrongInfo) {
+
+            String userName = inputUserName();
+            if (Utils.isExit(userName)) {
+                return false;
+            }
+
+            String password = inputPassword();
+            if (Utils.isExit(password)) {
+                return false;
+            }
+
             try {
-                userService.loginUser(inputUserName(), inputPassword());
-                wrongInfo = false;
+                userService.loginUser(userName, password);
+                wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
             }
         }
+        return true;
     }
 
     private void editUser() {
-        wrongInfo = true;
-        User newUser = Utils.findUser();
-        int usersID = newUser.getId();
-        while (wrongInfo) {
+        User user = Utils.findUser();
+
+        if (user == null) {
+            return;
+        }
+
+        int usersID = user.getId();
+        wrongInfo = false;
+
+        while (!wrongInfo) {
             try {
-                newUser.setUsername(inputUserName());
-                newUser.setPassword(inputPassword());
-                userService.edit(usersID, newUser);
-                wrongInfo = false;
+                user.setUsername(inputUserName());
+                user.setPassword(inputPassword());
+                userService.edit(usersID, user);
+                wrongInfo = !wrongInfo;
             }
             catch (BadRequestException exception) {
                 System.out.println("[...Username should NOT be empty. Password must contain at least 8 characters. Please set ID and new information again...]");
@@ -143,21 +185,31 @@ public class LoginPage {
                 System.out.println(exception.getErrorMessage());
             }
         }
+
+        System.out.println("User's name and password was changed");
     }
 
-    private void deleteUser() {
-        User newUser = Utils.findUser();
-        int usersID = newUser.getId();
-        wrongInfo = true;
-        while (wrongInfo) {
+    private boolean deleteUser() {
+        User user = Utils.findUser();
+
+        if (user == null) {
+            return false;
+        }
+
+        int usersID = user.getId();
+        wrongInfo = false;
+
+        while (!wrongInfo) {
             try {
                 userService.delete(usersID);
-                wrongInfo = false;
+                wrongInfo = !wrongInfo;
             }
             catch (NotFoundException exception) {
                 System.out.println(exception.getErrorMessage());
             }
         }
+
         System.out.println("User with id " + usersID + " was deleted\n");
+        return true;
     }
 }
