@@ -4,8 +4,10 @@ import com.cursor.model.Ticket;
 import com.cursor.model.User;
 import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
+import com.cursor.service.DashboardImpl;
 import com.cursor.service.TicketServiceImpl;
 import com.cursor.service.UserServiceImpl;
+import com.cursor.service.interfaces.Dashboard;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -14,6 +16,7 @@ public class Actions {
     UserServiceImpl userService = new UserServiceImpl();
     Scanner scanner = new Scanner(System.in);
     TicketServiceImpl ticketService = new TicketServiceImpl();
+    Dashboard dashboard = new DashboardImpl();
 
     public String inputTicketName() {
         System.out.println("Bug ticket's name: ");
@@ -104,6 +107,7 @@ public class Actions {
                         System.out.println("Bug ticket with id " + ticketID + " was deleted");
                         System.out.println(" ");
                     }
+                    case 6 -> getDashboard();
                     case 0 -> isActiveMenu = false;
                     default -> System.out.println("Wrong number, please enter a number 0-5:");
                 }
@@ -111,6 +115,70 @@ public class Actions {
         } catch (InputMismatchException e) {
             System.out.println("Wrong input, please use numbers");
         }
+    }
+
+    private void getDashboard() {
+        try {
+            boolean isActiveMenu = true;
+            while (isActiveMenu) {
+                showDashboardMenu();
+                int menu = scanner.nextInt();
+                switch (menu) {
+                    case 1 -> {
+                        int time = dashboard.getTotalTime(getUser());
+                        System.out.println("Estimated time: " + time);
+                    }
+                    case 2 -> {
+                        int time = dashboard.getSpentTime(getUser());
+                        System.out.println("Spent time: " + time);
+                    }
+                    case 3 -> {
+                        System.out.println("Most time expensive ticket: ");
+                        System.out.println(dashboard.mostTimeExpensiveTicket());
+                    }
+                    case 4 -> {
+                        System.out.println("Tickets: ");
+                        System.out.println(dashboard.getTicketsByUser(getUser()));
+                    }
+                    case 5 -> {
+                        System.out.println(dashboard.getSystemStatistics());
+                    }
+                    case 6 -> {
+                        System.out.println(dashboard.getUserStatistics(getUser()));
+                    }
+                    case 7 -> {
+                        System.out.println(dashboard.getTicketsByStatus(inputTicketStatus()));
+                    }
+                    case  8 -> {
+                        System.out.println(dashboard.getTicketsByPriority(inputTicketPriority()));
+                    }
+                    case 0 -> isActiveMenu = false;
+                    default -> System.out.println("Wrong number, please enter a number 0-5:");
+                }
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Wrong input, please use numbers");
+        }
+    }
+
+    private User getUser() {
+        System.out.println("Enter, please, User's ID");
+        int UserID = scanner.nextInt();
+        return userService.findById(UserID);
+    }
+
+    private void showDashboardMenu() {
+        System.out.println("============Dashboard menu=============");
+        System.out.println("Please choose next: ");
+        System.out.println("'1' - Show estimated time");
+        System.out.println("'2' - Show spent time");
+        System.out.println("'3' - Find most time-expensive ticket");
+        System.out.println("'4' - Show tickets for special user");
+        System.out.println("'5' - Show System Statistics");
+        System.out.println("'6' - Show User Statistics");
+        System.out.println("'7' - Find tickets with special status");
+        System.out.println("'8' - Find tickets with special priority");
+        System.out.println("'0' - Back to Ticket's menu");
     }
 
     private void showTicketsMenu() {
@@ -121,6 +189,7 @@ public class Actions {
         System.out.println("'3' - Find bug-ticket by ID");
         System.out.println("'4' - Edit bug-ticket by ID ");
         System.out.println("'5' - Delete bug-ticket by ID");
+        System.out.println("'6' - Dashboard menu");
         System.out.println("'0' - Back to User's menu");
     }
 }
