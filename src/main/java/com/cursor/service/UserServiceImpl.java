@@ -1,11 +1,12 @@
 package com.cursor.service;
 
 import com.cursor.model.User;
+import com.cursor.model.enums.Size;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.dao.impls.UserDao;
+import com.cursor.service.exceptions.ErrorMessage;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
-
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
@@ -15,10 +16,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(User user) {
         checkExistence(user.getUsername());
-        if (user.getUsername().isBlank() || (user.getPassword().isBlank())) {
-            throw new BadRequestException("Invalid username or password");
-        } else if (user.getPassword().length() < 8) {
-            throw new BadRequestException("The password is too short");
+        if (user.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getSize() ||  user.getUsername().length() < Size.USERNAME_MIN_LENGTH.getSize()) {
+            throw new BadRequestException("The username/password is too short");
         } else {
             users.create(user);
         }
@@ -44,16 +43,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(int id) {
         checkExistence(id);
-        System.out.println(users.findById(id).toString());
         return users.findById(id);
-
     }
 
     @Override
     public void edit(int id, User entity) {
         checkExistence(id);
         if (!users.edit(id, entity)
-                || entity.getUsername().isBlank() || entity.getPassword().isBlank()) {
+                || entity.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getSize() || entity.getUsername().length() < Size.USERNAME_MIN_LENGTH.getSize()) {
             throw new BadRequestException("Invalid user data");
         }
     }
@@ -66,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
     private void checkExistence(int id) {
         if (users.findById(id) == null) {
-            throw new NotFoundException("The user was not found");
+            throw new NotFoundException(ErrorMessage.NOT_FOUND.getErrorMessage());
         }
     }
 

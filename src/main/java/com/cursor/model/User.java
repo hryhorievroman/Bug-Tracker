@@ -38,10 +38,8 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", password='" + password + '\'' +
-                ", username='" + username + '\'' +
-                '}';
+        return "\t\tUser" +
+                "\t|\tid: " + id +
+                "\t|\tusername: \"" + username + "\"";
     }
 }
