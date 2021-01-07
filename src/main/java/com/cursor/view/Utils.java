@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Utils {
 
-    public static int getNum() {
+    public static int expectNumInput() {
         int number = -1;
         boolean wrongInfo = true;
         while (wrongInfo) {
@@ -27,12 +27,17 @@ public class Utils {
         return number;
     }
 
+    public static String expectStringInput(){
+        Scanner newScan = new Scanner(System.in);
+        return newScan.nextLine();
+    }
+
     public static User findUser() {
         boolean wrongInfo = true;
         User user = null;
         while (wrongInfo) {
             try {
-                int userID = getNum();
+                int userID = expectNumInput();
                 if (userID != -1) {
                     user = new UserServiceImpl().findById(userID);
                 }

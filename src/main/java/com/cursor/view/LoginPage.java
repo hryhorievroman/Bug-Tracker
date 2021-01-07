@@ -23,7 +23,7 @@ public class LoginPage {
 
         while (isActive) {
             showUnregisteredMenu();
-            int menu = Utils.getNum();
+            int menu = Utils.expectNumInput();
             switch (menu) {
                 case 1 -> {
                     if (registerUser()) {
@@ -58,7 +58,7 @@ public class LoginPage {
         isActive = true;
         while (isActive) {
             showRegisteredMenu();
-            int action = Utils.getNum();
+            int action = Utils.expectNumInput();
             switch (action) {
                 case 1 -> {
                     System.out.println("Lists of users: ");
