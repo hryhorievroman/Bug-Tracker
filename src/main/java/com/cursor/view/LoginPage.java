@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 public class LoginPage {
     public static final UserService userService = new UserServiceImpl();
+    private static String currentLoggedUserName;
     private final Actions actions = new Actions();
     private final Scanner scanner = new Scanner(System.in);
     private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
@@ -77,9 +78,7 @@ public class LoginPage {
                 }
                 case 4 -> {
                     System.out.println("For delete User please enter User's ID " + TYPE_TO_EXIT + ":");
-                    if (deleteUser()) {
-                        isActive = false;
-                    }
+                    deleteUser();
                 }
                 case 5 -> actions.showActionsMenu();
                 case 0 -> showMainMenu();
@@ -128,6 +127,7 @@ public class LoginPage {
 
             try {
                 userService.registerUser(new User(userName, password));
+                currentLoggedUserName = userName;
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
@@ -155,6 +155,7 @@ public class LoginPage {
 
             try {
                 userService.loginUser(userName, password);
+                currentLoggedUserName = userName;
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
@@ -204,6 +205,10 @@ public class LoginPage {
         while (!wrongInfo) {
             try {
                 userService.delete(usersID);
+                if (user.getUsername().equals(currentLoggedUserName)){
+                    System.out.println("User with id " + usersID + " was deleted\n");
+                    showMainMenu();
+                }
                 wrongInfo = !wrongInfo;
             }
             catch (NotFoundException exception) {
