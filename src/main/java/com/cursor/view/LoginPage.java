@@ -8,6 +8,7 @@ import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class LoginPage {
@@ -18,7 +19,7 @@ public class LoginPage {
     private boolean isActive;
     private boolean wrongInfo;
 
-    public void showMainMenu() {
+    public void showMainMenu() throws SQLException {
         isActive = true;
 
         while (isActive) {
@@ -54,7 +55,7 @@ public class LoginPage {
         return scanner.next();
     }
 
-    public void showUsersMenu() {
+    public void showUsersMenu() throws SQLException {
         isActive = true;
         while (isActive) {
             showRegisteredMenu();
@@ -110,7 +111,7 @@ public class LoginPage {
         System.out.println("'0' - Log out");
     }
 
-    private boolean registerUser() {
+    private boolean registerUser() throws SQLException {
 
         wrongInfo = false;
 
@@ -137,7 +138,7 @@ public class LoginPage {
         return true;
     }
 
-    private boolean loginUser() {
+    private boolean loginUser() throws SQLException {
 
         wrongInfo = false;
 
@@ -156,14 +157,14 @@ public class LoginPage {
             try {
                 userService.loginUser(userName, password);
                 wrongInfo = !wrongInfo;
-            } catch (BadRequestException exception) {
+            } catch (BadRequestException e) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
             }
         }
         return true;
     }
 
-    private void editUser() {
+    private void editUser() throws SQLException {
         User user = Utils.findUser();
 
         if (user == null) {
@@ -191,7 +192,7 @@ public class LoginPage {
         System.out.println("User's name and password was changed");
     }
 
-    private boolean deleteUser() {
+    private boolean deleteUser() throws SQLException {
         User user = Utils.findUser();
 
         if (user == null) {

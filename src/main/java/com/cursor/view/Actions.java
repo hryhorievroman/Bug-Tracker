@@ -13,6 +13,7 @@ import com.cursor.model.enums.Message;
 import com.cursor.service.UserServiceImpl;
 import com.cursor.service.interfaces.Dashboard;
 
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -22,7 +23,7 @@ public class Actions {
     UserServiceImpl userService = new UserServiceImpl();
     Dashboard dashboard = new DashboardImpl();
 
-    public void showActionsMenu() {
+    public void showActionsMenu() throws SQLException {
         boolean isActive = true;
         while (isActive) {
             showTicketsMenu();
@@ -69,7 +70,7 @@ public class Actions {
         }
     }
 
-    public void setTicket(Ticket ticket) {
+    public void setTicket(Ticket ticket) throws SQLException {
         boolean isFlowContinued = true;
         while (isFlowContinued) {
             try {
@@ -144,7 +145,7 @@ public class Actions {
         }
     }
 
-    private Ticket findTicket() {
+    private Ticket findTicket() throws SQLException {
         boolean isFlowContinued = true;
         Ticket ticket = null;
         while (isFlowContinued) {
@@ -164,7 +165,7 @@ public class Actions {
         return ticket;
     }
 
-    private boolean deleteTicket() {
+    private boolean deleteTicket() throws SQLException {
         boolean isFlowContinued = true;
         while (isFlowContinued) {
             try {
@@ -184,7 +185,7 @@ public class Actions {
         return true;
     }
 
-    private void getDashboard() {
+    private void getDashboard() throws SQLException {
         try {
             boolean isActiveMenu = true;
             while (isActiveMenu) {
@@ -284,7 +285,7 @@ public class Actions {
         };
     }
 
-    private User getUser() {
+    private User getUser() throws SQLException {
         System.out.println("Enter, please, User's ID");
         int UserID = scanner.nextInt();
         return userService.findById(UserID);

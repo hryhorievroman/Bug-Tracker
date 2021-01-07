@@ -5,7 +5,7 @@ import com.cursor.model.enums.Status;
 
 public class Ticket {
     private int id;
-    private static int idGenerator = 0;
+
     private String name;
     private String description;
     private User assignee;
@@ -16,7 +16,7 @@ public class Ticket {
     private int timeEstimated;
 
     public Ticket() {
-       this.id = ++idGenerator;
+
     }
 
     public Ticket(String name,
@@ -35,7 +35,7 @@ public class Ticket {
         this.priority = priority;
         this.timeSpent = timeSpent;
         this.timeEstimated = timeEstimated;
-        this.id = ++idGenerator;
+
     }
 
     public String getName() {
@@ -104,6 +104,10 @@ public class Ticket {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

@@ -8,22 +8,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class UserDao implements CRUD<User> {
-    private static UserDao instance;
+public final class UserDaoInMem implements CRUD<User> {
+    private static UserDaoInMem instance;
     private final Map<Integer, User> users = new HashMap<>();
-
-    private UserDao() {
+    private static int idGenerator = 0;
+    private UserDaoInMem() {
     }
 
-    public static UserDao getInstance() {
+    public static UserDaoInMem getInstance() {
         if (instance == null) {
-            instance = new UserDao();
+            instance = new UserDaoInMem();
         }
         return instance;
     }
 
     @Override
     public boolean create(User entity) {
+        entity.setId(++idGenerator);
         return users.put(entity.getId(), entity) != null;
     }
 

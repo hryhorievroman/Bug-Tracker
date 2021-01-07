@@ -4,6 +4,7 @@ import com.cursor.model.User;
 import com.cursor.service.UserServiceImpl;
 import com.cursor.service.exceptions.NotFoundException;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Utils {
@@ -32,7 +33,7 @@ public class Utils {
         return newScan.nextLine();
     }
 
-    public static User findUser() {
+    public static User findUser() throws SQLException {
         boolean wrongInfo = true;
         User user = null;
         while (wrongInfo) {

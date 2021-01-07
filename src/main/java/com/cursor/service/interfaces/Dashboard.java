@@ -5,24 +5,25 @@ import com.cursor.model.User;
 import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface Dashboard {
 
-    int getTotalTime(User user);
+    int getTotalTime(User user) throws SQLException;
 
-    int getSpentTime(User user);
+    int getSpentTime(User user) throws SQLException;
 
-    Ticket mostTimeExpensiveTicket();
+    Ticket mostTimeExpensiveTicket() throws SQLException;
 
-    List<Ticket> getTicketsByUser(User user);
+    List<Ticket> getTicketsByUser(User user) throws SQLException;
 
-    String getSystemStatistics();
+    String getSystemStatistics() throws SQLException;
 
-    String getUserStatistics(User user);
+    String getUserStatistics(User user) throws SQLException;
 
-    List<Ticket> getTicketsByStatus(Status status);
+    List<Ticket> getTicketsByStatus(Status status) throws SQLException;
 
-    List<Ticket> getTicketsByPriority(Priority priority);
+    List<Ticket> getTicketsByPriority(Priority priority) throws SQLException;
 
 }
