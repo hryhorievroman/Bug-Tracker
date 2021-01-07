@@ -13,6 +13,7 @@ import com.cursor.model.enums.Message;
 import com.cursor.service.UserServiceImpl;
 import com.cursor.service.interfaces.Dashboard;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Actions {
@@ -31,7 +32,7 @@ public class Actions {
                     System.out.println("Please enter a ticket's information: " + Message.TYPE_TO_EXIT.getMessage() + ":");
                     Ticket ticket = new Ticket();
                     setTicket(ticket);
-                    if (ticket != null) {
+                    if (ticket.getTimeEstimated() != 0) {
                         ticketService.create(ticket);
                         System.out.println("The ticket was created");
                     }
@@ -39,7 +40,7 @@ public class Actions {
                 case 2 -> {
                     System.out.println("Lists of tickets: ");
                     ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
-                    System.out.println("");
+                    System.out.println();
                 }
                 case 3 -> {
                     System.out.println("For search please enter ticket's ID: " + Message.TYPE_TO_EXIT.getMessage() + ":");
@@ -100,22 +101,9 @@ public class Actions {
                     return;
                 }
 
-                System.out.println("Status: 1 - ToDo, 2 -InProgress, 3 – In Review, 4 – Approved, 5 - Done");
-                Status status;
-                int statusNum = Utils.getNum();
+                Status status = inputTicketStatus();
 
-                if (statusNum == -1) {
-                    return;
-                }
-
-
-                System.out.println("Priority: 1 - Trivial, 2 - Minor, 3 – Major, 4 – Critical, 5 - Blocker");
-                Priority priority;
-                int priorityNum = Utils.getNum();
-
-                if (priorityNum == -1) {
-                    return;
-                }
+                Priority priority = inputTicketPriority();
 
                 System.out.println("Time spent:");
                 int timeSpent = Utils.getNum();
@@ -132,29 +120,10 @@ public class Actions {
                 }
 
                 if (name.isBlank() || description.isBlank()
-                        || statusNum < 1|| statusNum > 5
-                        || priorityNum < 1 || priorityNum > 5
                         || timeSpent < 0 || timeEstimated < 0) {
                     throw new BadRequestException("A ticket's information is incorrect");
                 }
                 else {
-                    status = switch (statusNum) {
-                        case 1 -> Status.TODO;
-                        case 2 -> Status.IN_PROGRESS;
-                        case 3 -> Status.IN_REVIEW;
-                        case 4 -> Status.APPROVED;
-                        case 5 -> Status.DONE;
-                        default -> null;
-                    };
-
-                    priority = switch (priorityNum) {
-                        case 1 -> Priority.TRIVIAL;
-                        case 2 -> Priority.MINOR;
-                        case 3 -> Priority.MAJOR;
-                        case 4 -> Priority.CRITICAL;
-                        case 5 -> Priority.BLOCKER;
-                        default -> null;
-                    };
                     ticket.setName(name);
                     ticket.setDescription(description);
                     ticket.setAssignee(asignee);
@@ -173,7 +142,6 @@ public class Actions {
                         "\n\tTime spent and Time estimated values should be larger than 0\n");
             }
         }
-        return;
     }
 
     private Ticket findTicket() {
@@ -258,6 +226,58 @@ public class Actions {
         } catch (InputMismatchException e) {
             System.out.println("Wrong input, please use numbers");
         }
+    }
+
+    private Status inputTicketStatus() {
+        boolean wrongInfo = false;
+        int statusNum = -1;
+        while (!wrongInfo) {
+            try {
+                System.out.println("Status: 1 - ToDo, 2 -InProgress, 3 – In Review, 4 – Approved, 5 - Done");
+                statusNum = Utils.getNum();
+                if (statusNum < 1 || statusNum > 5) {
+                    throw new BadRequestException("A ticket's status number is incorrect");
+                } else {
+                    wrongInfo = !wrongInfo;
+                }
+            } catch (BadRequestException exception) {
+                System.out.println("[...The Status number is incorrect. Please enter a new Status number as a digit from 0 to 5...]");
+            }
+        }
+        return switch (statusNum) {
+            case 1 -> Status.TODO;
+            case 2 -> Status.IN_PROGRESS;
+            case 3 -> Status.IN_REVIEW;
+            case 4 -> Status.APPROVED;
+            case 5 -> Status.DONE;
+            default -> null;
+        };
+    }
+
+    private Priority inputTicketPriority() {
+        boolean wrongInfo = false;
+        int priorityNum = -1;
+        while (!wrongInfo) {
+            try {
+                System.out.println("Priority: 1 - Trivial, 2 - Minor, 3 – Major, 4 – Critical, 5 - Blocker");
+                priorityNum = Utils.getNum();
+                if (priorityNum < 1 || priorityNum > 5) {
+                    throw new BadRequestException("A ticket's priority number is incorrect");
+                } else {
+                    wrongInfo = !wrongInfo;
+                }
+            } catch (BadRequestException exception) {
+                System.out.println("[...The Priority number is incorrect. Please enter a new Priority number as a digit from 0 to 5...]");
+            }
+        }
+        return switch (priorityNum) {
+            case 1 -> Priority.TRIVIAL;
+            case 2 -> Priority.MINOR;
+            case 3 -> Priority.MAJOR;
+            case 4 -> Priority.CRITICAL;
+            case 5 -> Priority.BLOCKER;
+            default -> null;
+        };
     }
 
     private User getUser() {
