@@ -74,14 +74,21 @@ public class Actions {
         while (isFlowContinued) {
             try {
                 System.out.println("Name: ");
-                String name = scanner.nextLine();
+                //String name = scanner.nextLine();
+                String name = Utils.expectStringInput();
+                if (name.isBlank()){
+                    throw new BadRequestException("");
+                }
 
                 if (Utils.isExit(name)) {
                     return;
                 }
 
                 System.out.println("Description: ");
-                String description = scanner.nextLine();
+                String description = Utils.expectStringInput();
+                if (description.isBlank()){
+                    throw new BadRequestException("");
+                }
 
                 if (Utils.isExit(description)) {
                     return;
@@ -119,8 +126,7 @@ public class Actions {
                     return;
                 }
 
-                if (name.isBlank() || description.isBlank()
-                        || timeSpent < 0 || timeEstimated < 0) {
+                if (timeSpent < 0 || timeEstimated < 0) {
                     throw new BadRequestException("A ticket's information is incorrect");
                 } else {
                     ticket.setName(name);
@@ -135,9 +141,10 @@ public class Actions {
                 }
             } catch (BadRequestException exception) {
                 System.out.println("Please type a ticket's information correctly:" +
+                        "\n\tName should NOT be empty" +
                         "\n\tDescription should NOT be empty" +
                         "\n\tIDs values should be correct" +
-                        "\n\tEnter Status and Priority values as digits from 0 to 5" +
+                        "\n\tEnter Status and Priority values as reserved word" +
                         "\n\tTime spent and Time estimated values should be larger than 0\n");
             }
         }
