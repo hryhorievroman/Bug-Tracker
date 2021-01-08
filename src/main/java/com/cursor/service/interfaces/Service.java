@@ -6,13 +6,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface Service<T> {
-    void create(T entity) throws SQLException;
+    void create(T entity);
 
-    List<T> getAll() throws SQLException;
+    List<T> getAll();
 
-    T findById(int id) throws SQLException;
+    T findById(int id);
 
-    void edit(int id, T entity) throws SQLException;
+    void edit(int id, T entity);
 
-    void delete(int id) throws SQLException;
+    void delete(int id);
 }

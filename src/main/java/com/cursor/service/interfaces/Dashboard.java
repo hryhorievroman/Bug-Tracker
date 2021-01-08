@@ -10,20 +10,20 @@ import java.util.List;
 
 public interface Dashboard {
 
-    int getTotalTime(User user) throws SQLException;
+    int getTotalTime(User user);
 
-    int getSpentTime(User user) throws SQLException;
+    int getSpentTime(User user);
 
-    Ticket mostTimeExpensiveTicket() throws SQLException;
+    Ticket mostTimeExpensiveTicket();
 
-    List<Ticket> getTicketsByUser(User user) throws SQLException;
+    List<Ticket> getTicketsByUser(User user);
 
-    String getSystemStatistics() throws SQLException;
+    String getSystemStatistics();
 
-    String getUserStatistics(User user) throws SQLException;
+    String getUserStatistics(User user);
 
-    List<Ticket> getTicketsByStatus(Status status) throws SQLException;
+    List<Ticket> getTicketsByStatus(Status status);
 
-    List<Ticket> getTicketsByPriority(Priority priority) throws SQLException;
+    List<Ticket> getTicketsByPriority(Priority priority);
 
 }

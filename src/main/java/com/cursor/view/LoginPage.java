@@ -8,14 +8,13 @@ import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
 
-import java.sql.SQLException;
 import java.util.Scanner;
 
 public class LoginPage {
     public static final UserService userService = new UserServiceImpl();
+    private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
     private final Actions actions = new Actions();
     private final Scanner scanner = new Scanner(System.in);
-    private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
     private boolean isActive;
     private boolean wrongInfo;
 
@@ -63,11 +62,7 @@ public class LoginPage {
             switch (action) {
                 case 1 -> {
                     System.out.println("Lists of users: ");
-                    try {
-                        userService.getAll().forEach(user -> System.out.println(user.toString()));
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
+                    userService.getAll().forEach(user -> System.out.println(user.toString()));
                 }
                 case 2 -> {
                     System.out.println("For search please enter User's ID " + TYPE_TO_EXIT + ":");
@@ -136,8 +131,6 @@ public class LoginPage {
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
             }
         }
 
@@ -161,11 +154,7 @@ public class LoginPage {
             }
 
             try {
-                try {
-                    userService.loginUser(userName, password);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+                userService.loginUser(userName, password);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException e) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
@@ -188,21 +177,14 @@ public class LoginPage {
             try {
                 user.setUsername(inputUserName());
                 user.setPassword(inputPassword());
-                try {
-                    userService.edit(usersID, user);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+                userService.edit(usersID, user);
                 wrongInfo = !wrongInfo;
-            }
-            catch (BadRequestException exception) {
+            } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
-            }
-            catch (NotFoundException exception) {
+            } catch (NotFoundException exception) {
                 System.out.println(exception.getErrorMessage());
             }
         }
-
         System.out.println("User's name and password was changed");
     }
 
@@ -218,14 +200,9 @@ public class LoginPage {
 
         while (!wrongInfo) {
             try {
-                try {
-                    userService.delete(usersID);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+                userService.delete(usersID);
                 wrongInfo = !wrongInfo;
-            }
-            catch (NotFoundException exception) {
+            } catch (NotFoundException exception) {
                 System.out.println(exception.getErrorMessage());
             }
         }
