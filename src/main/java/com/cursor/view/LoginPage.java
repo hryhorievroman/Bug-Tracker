@@ -7,12 +7,13 @@ import com.cursor.service.UserServiceImpl;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
+import com.cursor.utils.Session;
 
 import java.util.Scanner;
 
 public class LoginPage {
     public static final UserService userService = new UserServiceImpl();
-    private static String currentLoggedUserName;
+   // private static String currentLoggedUserName;
     private final Actions actions = new Actions();
     private final Scanner scanner = new Scanner(System.in);
     private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
@@ -127,7 +128,7 @@ public class LoginPage {
 
             try {
                 userService.registerUser(new User(userName, password));
-                currentLoggedUserName = userName;
+                Session.setUsername(userName);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
@@ -155,7 +156,7 @@ public class LoginPage {
 
             try {
                 userService.loginUser(userName, password);
-                currentLoggedUserName = userName;
+                Session.setUsername(userName);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
@@ -205,7 +206,7 @@ public class LoginPage {
         while (!wrongInfo) {
             try {
                 userService.delete(usersID);
-                if (user.getUsername().equals(currentLoggedUserName)){
+                if (user.getUsername().equals(Session.getUsername())){
                     System.out.println("User with id " + usersID + " was deleted\n");
                     showMainMenu();
                 }
