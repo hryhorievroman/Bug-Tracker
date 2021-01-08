@@ -14,6 +14,7 @@ import com.cursor.service.interfaces.Dashboard;
 import com.cursor.service.interfaces.TicketService;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Actions {
@@ -189,15 +190,13 @@ public class Actions {
                 int menu = scanner.nextInt();
                 switch (menu) {
                     case 1 -> {
-                        int time = 0;
-                        time = dashboard.getTotalTime(getUser());
+                        System.out.println("For search please enter User's ID: ");
+                        int time = dashboard.getTotalTime(Utils.findUser());
                         System.out.println("Estimated time: " + time);
                     }
                     case 2 -> {
-                        int time = 0;
-
-                        time = dashboard.getSpentTime(getUser());
-
+                        System.out.println("For search please enter User's ID: ");
+                        int time = dashboard.getSpentTime(Utils.findUser());
                         System.out.println("Spent time: " + time);
                     }
                     case 3 -> {
@@ -206,12 +205,28 @@ public class Actions {
                     }
                     case 4 -> {
                         System.out.println("Tickets: ");
-                        System.out.println(dashboard.getTicketsByUser(getUser()));
+                        System.out.println("For search please enter User's ID: ");
+                        System.out.println(dashboard.getTicketsByUser(Utils.findUser()));
                     }
                     case 5 -> System.out.println(dashboard.getSystemStatistics());
-                    case 6 -> System.out.println(dashboard.getUserStatistics(getUser()));
-                    case 7 -> System.out.println(dashboard.getTicketsByStatus(inputTicketStatus()));
-                    case 8 -> System.out.println(dashboard.getTicketsByPriority(inputTicketPriority()));
+                    case 6 -> {
+                        System.out.println("For search please enter User's ID: ");
+                        System.out.println(dashboard.getUserStatistics(Utils.findUser()));
+                    }
+                    case 7 -> {
+                        if (dashboard.getTicketsByStatus(inputTicketStatus()).isEmpty()) {
+                            System.out.println("There are no tickets with this status");
+                        } else {
+                            System.out.println(dashboard.getTicketsByStatus(inputTicketStatus()));
+                        }
+                    }
+                    case 8 -> {
+                        if (dashboard.getTicketsByPriority(inputTicketPriority()).isEmpty()) {
+                            System.out.println("There are no tickets with this priority");
+                        } else {
+                            System.out.println(dashboard.getTicketsByPriority(inputTicketPriority()));
+                        }
+                    }
                     case 0 -> isActiveMenu = false;
                     default -> System.out.println("Wrong number, please enter a number 0-5:");
                 }
@@ -285,11 +300,6 @@ public class Actions {
         };
     }
 
-    private User getUser() {
-        System.out.println("Enter, please, User's ID");
-        int UserID = scanner.nextInt();
-        return userService.findById(UserID);
-    }
 
     private void showDashboardMenu() {
         System.out.println("============Dashboard menu=============");
