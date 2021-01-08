@@ -44,6 +44,6 @@ public class User {
     public String toString() {
         return "\t\tUser" +
                 "\t|\tid: " + id +
-                "\t|\tusername: \"" + username + "\"";
+                "\t|\tname: \"" + username + "\"";
     }
 }

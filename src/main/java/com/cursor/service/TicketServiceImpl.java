@@ -2,39 +2,38 @@ package com.cursor.service;
 
 import com.cursor.dao.impls.TicketDaoDb;
 import com.cursor.dao.impls.TicketDaoInMem;
+import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.Ticket;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.ErrorMessage;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.TicketService;
-
-import java.sql.SQLException;
 import java.util.List;
 
 public class TicketServiceImpl implements TicketService {
-    private final TicketDaoDb tickets = TicketDaoDb.getInstance();
-//    private final TicketDaoInMem tickets = TicketDaoInMem.getInstance();
+    private final CRUD<Ticket> tickets = TicketDaoDb.getInstance();
+//    private final CRUD<Ticket> tickets = TicketDaoInMem.getInstance();
 
     @Override
-    public void create(Ticket entity) throws SQLException {
+    public void create(Ticket entity) {
         if (!tickets.create(entity)) {
             throw new BadRequestException("An error while creating a ticket occurred");
         }
     }
 
     @Override
-    public List<Ticket> getAll() throws SQLException {
+    public List<Ticket> getAll() {
         return tickets.getAll();
     }
 
     @Override
-    public Ticket findById(int id) throws SQLException {
+    public Ticket findById(int id) {
         checkExistence(id);
         return tickets.findById(id);
     }
 
     @Override
-    public void edit(int id, Ticket entity) throws SQLException {
+    public void edit(int id, Ticket entity) {
         checkExistence(id);
         if (!tickets.edit(id, entity)) {
             throw new BadRequestException("Invalid ticket data");
@@ -42,12 +41,12 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public void delete(int id) {
         checkExistence(id);
         tickets.delete(id);
     }
 
-    private void checkExistence(int id) throws SQLException {
+    private void checkExistence(int id) {
         if (tickets.findById(id) == null) {
             throw new NotFoundException(ErrorMessage.NOT_FOUND.getErrorMessage());
         }

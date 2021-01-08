@@ -112,14 +112,14 @@ public class Ticket {
 
     @Override
     public String toString() {
-        return  "\t\tid: " + id +
-                "\t|\tname: \"" + name + "\"" +
-                "\t|\tdescription: \"" + description + "\"" +
-                "\t|\tassignee: \"" + assignee.getUsername() + "\" (id: " + assignee.getId() + ")" +
-                "\t|\treporter: \"" + reporter.getUsername() + "\" (id: " + reporter.getId() + ")" +
-                "\t|\tstatus: \"" + status + "\"" +
-                "\t|\tpriority: \"" + priority + "\"" +
-                "\t|\ttimeSpent: " + timeSpent +
-                "\t|\ttimeEstimated: " + timeEstimated;
+        return  " id:" + id +
+                " | name:\"" + name + "\"" +
+                " | description:\"" + description + "\"" +
+                " | assignee:\"" + assignee.getUsername() + "\" (id:" + assignee.getId() + ")" +
+                " | reporter:\"" + reporter.getUsername() + "\" (id:" + reporter.getId() + ")" +
+                " | status:\"" + status + "\"" +
+                " | priority:\"" + priority + "\"" +
+                " | timeSpent:" + timeSpent +
+                " | timeEstimated:" + timeEstimated;
     }
 }

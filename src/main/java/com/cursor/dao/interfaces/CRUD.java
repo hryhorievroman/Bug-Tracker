@@ -4,13 +4,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface CRUD<T> {
-    boolean create(T entity) throws SQLException;
+    boolean create(T entity);
 
-    List<T> getAll()throws SQLException;
+    List<T> getAll();
 
-    T findById(int id)throws SQLException;
+    T findById(int id);
 
-    boolean edit(int id, T entity)throws SQLException;
+    boolean edit(int id, T entity);
 
-    boolean delete(int id)throws SQLException;
+    boolean delete(int id);
 }

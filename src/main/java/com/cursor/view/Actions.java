@@ -23,7 +23,7 @@ public class Actions {
     UserServiceImpl userService = new UserServiceImpl();
     Dashboard dashboard = new DashboardImpl();
 
-    public void showActionsMenu() throws SQLException {
+    public void showActionsMenu() {
         boolean isActive = true;
         while (isActive) {
             showTicketsMenu();
@@ -34,13 +34,21 @@ public class Actions {
                     Ticket ticket = new Ticket();
                     setTicket(ticket);
                     if (ticket.getTimeEstimated() != 0) {
-                        ticketService.create(ticket);
+                        try {
+                            ticketService.create(ticket);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                         System.out.println("The ticket was created");
                     }
                 }
                 case 2 -> {
-                    System.out.println("Lists of tickets: ");
-                    ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
+                    System.out.println("List of tickets: ");
+                    try {
+                        ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
                     System.out.println();
                 }
                 case 3 -> {
@@ -53,7 +61,11 @@ public class Actions {
                     if (ticket != null) {
                         System.out.println("Ticket's information:\n" + ticket + "\nPlease enter the Ticket's new information");
                         setTicket(ticket);
-                        ticketService.edit(ticket.getId(), ticket);
+                        try {
+                            ticketService.edit(ticket.getId(), ticket);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                         System.out.println("The ticket was changed");
                     }
                 }
@@ -70,7 +82,7 @@ public class Actions {
         }
     }
 
-    public void setTicket(Ticket ticket) throws SQLException {
+    public void setTicket(Ticket ticket){
         boolean isFlowContinued = true;
         while (isFlowContinued) {
             try {
@@ -145,7 +157,7 @@ public class Actions {
         }
     }
 
-    private Ticket findTicket() throws SQLException {
+    private Ticket findTicket() {
         boolean isFlowContinued = true;
         Ticket ticket = null;
         while (isFlowContinued) {
@@ -160,18 +172,24 @@ public class Actions {
                 isFlowContinued = false;
             } catch (NotFoundException exception) {
                 System.out.println("[...The ticket with such ID wasn't found. Please enter ID again...]");
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
         }
         return ticket;
     }
 
-    private boolean deleteTicket() throws SQLException {
+    private boolean deleteTicket() {
         boolean isFlowContinued = true;
         while (isFlowContinued) {
             try {
                 Ticket ticket = findTicket();
                 if (ticket != null) {
-                    ticketService.delete(ticket.getId());
+                    try {
+                        ticketService.delete(ticket.getId());
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
                     isFlowContinued = false;
                 }
                 else {
@@ -185,7 +203,7 @@ public class Actions {
         return true;
     }
 
-    private void getDashboard() throws SQLException {
+    private void getDashboard() {
         try {
             boolean isActiveMenu = true;
             while (isActiveMenu) {
@@ -193,11 +211,21 @@ public class Actions {
                 int menu = scanner.nextInt();
                 switch (menu) {
                     case 1 -> {
-                        int time = dashboard.getTotalTime(getUser());
+                        int time = 0;
+                        try {
+                            time = dashboard.getTotalTime(getUser());
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                         System.out.println("Estimated time: " + time);
                     }
                     case 2 -> {
-                        int time = dashboard.getSpentTime(getUser());
+                        int time = 0;
+                        try {
+                            time = dashboard.getSpentTime(getUser());
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                         System.out.println("Spent time: " + time);
                     }
                     case 3 -> {
@@ -218,6 +246,8 @@ public class Actions {
             }
         } catch (InputMismatchException e) {
             System.out.println("Wrong input, please use numbers");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -285,7 +315,7 @@ public class Actions {
         };
     }
 
-    private User getUser() throws SQLException {
+    private User getUser() {
         System.out.println("Enter, please, User's ID");
         int UserID = scanner.nextInt();
         return userService.findById(UserID);

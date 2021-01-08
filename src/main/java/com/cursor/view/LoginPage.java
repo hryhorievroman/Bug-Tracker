@@ -19,7 +19,7 @@ public class LoginPage {
     private boolean isActive;
     private boolean wrongInfo;
 
-    public void showMainMenu() throws SQLException {
+    public void showMainMenu() {
         isActive = true;
 
         while (isActive) {
@@ -55,7 +55,7 @@ public class LoginPage {
         return scanner.next();
     }
 
-    public void showUsersMenu() throws SQLException {
+    public void showUsersMenu() {
         isActive = true;
         while (isActive) {
             showRegisteredMenu();
@@ -63,7 +63,11 @@ public class LoginPage {
             switch (action) {
                 case 1 -> {
                     System.out.println("Lists of users: ");
-                    userService.getAll().forEach(user -> System.out.println(user.toString()));
+                    try {
+                        userService.getAll().forEach(user -> System.out.println(user.toString()));
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
                 }
                 case 2 -> {
                     System.out.println("For search please enter User's ID " + TYPE_TO_EXIT + ":");
@@ -111,7 +115,7 @@ public class LoginPage {
         System.out.println("'0' - Log out");
     }
 
-    private boolean registerUser() throws SQLException {
+    private boolean registerUser() {
 
         wrongInfo = false;
 
@@ -132,13 +136,15 @@ public class LoginPage {
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
         }
 
         return true;
     }
 
-    private boolean loginUser() throws SQLException {
+    private boolean loginUser() {
 
         wrongInfo = false;
 
@@ -155,7 +161,11 @@ public class LoginPage {
             }
 
             try {
-                userService.loginUser(userName, password);
+                try {
+                    userService.loginUser(userName, password);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException e) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
@@ -164,7 +174,7 @@ public class LoginPage {
         return true;
     }
 
-    private void editUser() throws SQLException {
+    private void editUser() {
         User user = Utils.findUser();
 
         if (user == null) {
@@ -178,7 +188,11 @@ public class LoginPage {
             try {
                 user.setUsername(inputUserName());
                 user.setPassword(inputPassword());
-                userService.edit(usersID, user);
+                try {
+                    userService.edit(usersID, user);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 wrongInfo = !wrongInfo;
             }
             catch (BadRequestException exception) {
@@ -192,7 +206,7 @@ public class LoginPage {
         System.out.println("User's name and password was changed");
     }
 
-    private boolean deleteUser() throws SQLException {
+    private boolean deleteUser() {
         User user = Utils.findUser();
 
         if (user == null) {
@@ -204,7 +218,11 @@ public class LoginPage {
 
         while (!wrongInfo) {
             try {
-                userService.delete(usersID);
+                try {
+                    userService.delete(usersID);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 wrongInfo = !wrongInfo;
             }
             catch (NotFoundException exception) {

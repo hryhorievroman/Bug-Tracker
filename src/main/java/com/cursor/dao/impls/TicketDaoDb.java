@@ -30,19 +30,22 @@ public class TicketDaoDb implements CRUD<Ticket> {
 
 
     @Override
-    public boolean create(Ticket entity) throws SQLException {
+    public boolean create(Ticket entity) {
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement();
             String input = "insert into tickets(Name, description, assignee, reporter, status, priority, time_spent, time_estimated) values ('" + entity.getName() + "', '" + entity.getDescription() + "','" + entity.getAssignee().getId() + "','" +
                     entity.getReporter().getId() + "','" + entity.getStatus() + "','" + entity.getPriority() + "','" + entity.getTimeSpent() +
                     "','" + entity.getTimeEstimated() + "')";
             statement.executeUpdate(input);
-            return true;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+        return true;
     }
 
     @Override
-    public List<Ticket> getAll() throws SQLException {
+    public List<Ticket> getAll() {
         ArrayList<Ticket> ticketsDb = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement();
@@ -63,12 +66,14 @@ public class TicketDaoDb implements CRUD<Ticket> {
                 ticket.setId(tId);
                 ticketsDb.add(ticket);
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return ticketsDb;
     }
 
     @Override
-    public Ticket findById(int id) throws SQLException {
+    public Ticket findById(int id) {
         ArrayList<Ticket> ticketsDb = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement();
@@ -88,12 +93,14 @@ public class TicketDaoDb implements CRUD<Ticket> {
                 ticket.setId(tId);
                 ticketsDb.add(0, ticket);
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return ticketsDb.get(0);
     }
 
     @Override
-    public boolean edit(int id, Ticket entity) throws SQLException{
+    public boolean edit(int id, Ticket entity) {
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String input = "update tickets set name = '" + entity.getName() + "', description = '" + entity.getDescription() + "', " +
@@ -101,15 +108,20 @@ public class TicketDaoDb implements CRUD<Ticket> {
                     " priority = '" + entity.getPriority() + "', time_spent = '" + entity.getTimeSpent() + "', " +
                     "time_estimated = '" + entity.getTimeEstimated() + "' where id = '" + id + "'";
             statement.executeUpdate(input);
-            return true;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+        return true;
     }
 
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(int id) {
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement();
             String input = "delete from tickets where id = '" + id + "'";
             statement.executeUpdate(input);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return true;
     }

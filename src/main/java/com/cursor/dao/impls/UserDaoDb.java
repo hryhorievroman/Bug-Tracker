@@ -6,8 +6,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class UserDaoDb implements CRUD<User> {
 
     private static final String userName = "roman";
@@ -26,17 +24,19 @@ public class UserDaoDb implements CRUD<User> {
     }
 
     @Override
-    public boolean create(User entity) throws SQLException{
+    public boolean create(User entity) {
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement();
             String input = "insert into users(name, password) values ('" + entity.getUsername() + "', '" + entity.getPassword() + "')";
             statement.executeUpdate(input);
-            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+        return true;
     }
 
     @Override
-    public List<User> getAll() throws SQLException{
+    public List<User> getAll() {
         ArrayList<User> usersDb = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement();
@@ -51,12 +51,14 @@ public class UserDaoDb implements CRUD<User> {
                 user.setId(uId);
                 usersDb.add(user);
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return usersDb;
     }
 
     @Override
-    public User findById(int id) throws SQLException {
+    public User findById(int id) {
         ArrayList<User> usersDb = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement();
@@ -70,26 +72,33 @@ public class UserDaoDb implements CRUD<User> {
                 user.setId(uId);
                 usersDb.add(0, user);
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return usersDb.get(0);
     }
 
     @Override
-    public boolean edit(int id, User entity) throws SQLException{
+    public boolean edit(int id, User entity) {
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String input = "update users set name = '" + entity.getUsername() + "', password = '" + entity.getPassword() + "' where id = '" + id + "'";
             statement.executeUpdate(input);
-            return true;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+        return true;
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(int id) {
         try (Connection connection = DriverManager.getConnection(url, userName, userPassword)) {
             Statement statement = connection.createStatement();
             String input = "delete from users where id = '" + id + "'";
             statement.executeUpdate(input);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return true;
     }
