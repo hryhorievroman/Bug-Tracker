@@ -5,6 +5,7 @@ import com.cursor.model.User;
 import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface Dashboard {

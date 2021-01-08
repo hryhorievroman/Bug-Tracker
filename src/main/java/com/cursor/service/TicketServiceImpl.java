@@ -1,16 +1,18 @@
 package com.cursor.service;
 
+import com.cursor.dao.impls.TicketDaoDb;
+import com.cursor.dao.impls.TicketDaoInMem;
+import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.Ticket;
 import com.cursor.service.exceptions.BadRequestException;
-import com.cursor.dao.impls.TicketDao;
 import com.cursor.service.exceptions.ErrorMessage;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.TicketService;
 import java.util.List;
 
 public class TicketServiceImpl implements TicketService {
-
-    private final TicketDao tickets = TicketDao.getInstance();
+    private final CRUD<Ticket> tickets = TicketDaoDb.getInstance();
+//    private final CRUD<Ticket> tickets = TicketDaoInMem.getInstance();
 
     @Override
     public void create(Ticket entity) {

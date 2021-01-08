@@ -1,7 +1,10 @@
 package com.cursor.service;
 
-import com.cursor.dao.impls.TicketDao;
-import com.cursor.dao.impls.UserDao;
+import com.cursor.dao.impls.TicketDaoDb;
+import com.cursor.dao.impls.TicketDaoInMem;
+import com.cursor.dao.impls.UserDaoDb;
+import com.cursor.dao.impls.UserDaoInMem;
+import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.Ticket;
 import com.cursor.model.User;
 import com.cursor.model.enums.Priority;
@@ -9,20 +12,24 @@ import com.cursor.model.enums.Status;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.Dashboard;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DashboardImpl implements Dashboard {
-    private TicketDao tickets = TicketDao.getInstance();
-    private UserDao users = UserDao.getInstance();
+//    private CRUD<Ticket> tickets = TicketDaoInMem.getInstance();
+//    private CRUD<User> users = UserDaoInMem.getInstance();
+    private final CRUD<Ticket> tickets = TicketDaoDb.getInstance();
+    private final CRUD<User> users = UserDaoDb.getInstance();
 
     @Override
-    public int getTotalTime(User user) {
+    public int getTotalTime(User user){
         int time = 0;
         for (Ticket ticket : tickets.getAll()) {
-            if (ticket.getAssignee().equals(user)) {
+            if (ticket.getAssignee().getId()==(user.getId())) {
+//                if (ticket.getAssignee().equals(user)) {
                 time += ticket.getTimeEstimated();
             }
         }
@@ -33,7 +40,8 @@ public class DashboardImpl implements Dashboard {
     public int getSpentTime(User user) {
         int time = 0;
         for (Ticket ticket : tickets.getAll()) {
-            if (ticket.getAssignee().equals(user)) {
+            if (ticket.getAssignee().getId()==(user.getId())) {
+//                if (ticket.getAssignee().equals(user)) {
                 time += ticket.getTimeSpent();
             }
         }
@@ -53,7 +61,8 @@ public class DashboardImpl implements Dashboard {
     public List<Ticket> getTicketsByUser(User user) {
         List<Ticket> ticketsByUser = new ArrayList<>();
         for (Ticket ticket : tickets.getAll()) {
-            if (ticket.getAssignee().equals(user)) {
+            if (ticket.getAssignee().getId()==(user.getId())) {
+//                if (ticket.getAssignee().equals(user)) {
                 ticketsByUser.add(ticket);
             }
         }
@@ -77,7 +86,8 @@ public class DashboardImpl implements Dashboard {
         String doneTickets = getStatusStatistics(ticketsByUser, Status.DONE);
         List<Ticket> createTickets = tickets.getAll()
                 .stream()
-                .filter(ticket -> ticket.getReporter().equals(user))
+//                .filter(ticket -> ticket.getReporter().equals(user))
+                .filter(ticket -> ticket.getReporter().getId()==(user.getId()))
                 .collect(Collectors.toList());
         return "User " + user.getUsername() +
                 " creates " + createTickets.size() + " tickets, " +

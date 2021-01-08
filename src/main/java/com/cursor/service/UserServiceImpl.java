@@ -1,9 +1,11 @@
 package com.cursor.service;
 
+import com.cursor.dao.impls.UserDaoDb;
+import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.User;
 import com.cursor.model.enums.Size;
 import com.cursor.service.exceptions.BadRequestException;
-import com.cursor.dao.impls.UserDao;
+import com.cursor.dao.impls.UserDaoInMem;
 import com.cursor.service.exceptions.ErrorMessage;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
@@ -11,8 +13,8 @@ import com.cursor.service.interfaces.UserService;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-
-    private final UserDao users = UserDao.getInstance();
+    private final CRUD<User> users = UserDaoDb.getInstance();
+//    private final CRUD<User> users = UserDaoInMem.getInstance();
 
     @Override
     public void registerUser(User user) {

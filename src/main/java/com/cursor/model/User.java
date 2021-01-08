@@ -2,18 +2,18 @@ package com.cursor.model;
 
 public class User {
     private int id;
-    private static int idGenerator = 0;
+
     private String password;
     private String username;
 
     public User() {
-        this.id = ++idGenerator;
+
     }
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.id = ++idGenerator;
+     ;
     }
 
     public String getPassword() {
@@ -36,10 +36,14 @@ public class User {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "\t\tUser" +
                 "\t|\tid: " + id +
-                "\t|\tusername: \"" + username + "\"";
+                "\t|\tname: \"" + username + "\"";
     }
 }

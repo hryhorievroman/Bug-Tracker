@@ -8,22 +8,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class TicketDao implements CRUD<Ticket> {
-    private static TicketDao instance;
+public final class TicketDaoInMem implements CRUD<Ticket> {
+    private static TicketDaoInMem instance;
     private final Map<Integer, Ticket> tickets = new HashMap<>();
+    private static int idGenerator = 0;
 
-    private TicketDao() {
+    private TicketDaoInMem() {
     }
 
-    public static TicketDao getInstance() {
+    public static TicketDaoInMem getInstance() {
         if (instance == null) {
-            instance = new TicketDao();
+            instance = new TicketDaoInMem();
         }
         return instance;
     }
 
     @Override
     public boolean create(Ticket entity) {
+        entity.setId(++idGenerator);
         return tickets.put(entity.getId(), entity) == null;
     }
 

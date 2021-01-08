@@ -13,9 +13,9 @@ import java.util.Scanner;
 
 public class LoginPage {
     public static final UserService userService = new UserServiceImpl();
+    private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
     private final Actions actions = new Actions();
     private final Scanner scanner = new Scanner(System.in);
-    private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
     private boolean isActive;
     private boolean wrongInfo;
 
@@ -158,7 +158,7 @@ public class LoginPage {
                 User user = userService.loginUser(userName, password);
                 Session.setUser(user);
                 wrongInfo = !wrongInfo;
-            } catch (BadRequestException exception) {
+            } catch (BadRequestException e) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
             }
         }
@@ -187,7 +187,6 @@ public class LoginPage {
                 System.out.println(exception.getErrorMessage());
             }
         }
-
         System.out.println("User's name and password was changed");
     }
 

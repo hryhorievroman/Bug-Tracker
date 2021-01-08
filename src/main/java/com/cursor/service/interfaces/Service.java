@@ -2,6 +2,7 @@ package com.cursor.service.interfaces;
 
 import com.cursor.service.exceptions.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface Service<T> {

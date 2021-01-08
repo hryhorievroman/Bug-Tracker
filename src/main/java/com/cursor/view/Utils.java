@@ -3,7 +3,6 @@ package com.cursor.view;
 import com.cursor.model.User;
 import com.cursor.service.UserServiceImpl;
 import com.cursor.service.exceptions.NotFoundException;
-
 import java.util.Scanner;
 
 public class Utils {

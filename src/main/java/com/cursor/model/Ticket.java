@@ -5,7 +5,7 @@ import com.cursor.model.enums.Status;
 
 public class Ticket {
     private int id;
-    private static int idGenerator = 0;
+
     private String name;
     private String description;
     private User assignee;
@@ -16,7 +16,7 @@ public class Ticket {
     private int timeEstimated;
 
     public Ticket() {
-       this.id = ++idGenerator;
+
     }
 
     public Ticket(String name,
@@ -35,7 +35,7 @@ public class Ticket {
         this.priority = priority;
         this.timeSpent = timeSpent;
         this.timeEstimated = timeEstimated;
-        this.id = ++idGenerator;
+
     }
 
     public String getName() {
@@ -106,16 +106,20 @@ public class Ticket {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
-        return  "\t\tid: " + id +
-                "\t|\tname: \"" + name + "\"" +
-                "\t|\tdescription: \"" + description + "\"" +
-                "\t|\tassignee: \"" + assignee.getUsername() + "\" (id: " + assignee.getId() + ")" +
-                "\t|\treporter: \"" + reporter.getUsername() + "\" (id: " + reporter.getId() + ")" +
-                "\t|\tstatus: \"" + status + "\"" +
-                "\t|\tpriority: \"" + priority + "\"" +
-                "\t|\ttimeSpent: " + timeSpent +
-                "\t|\ttimeEstimated: " + timeEstimated;
+        return  " id:" + id +
+                " | name:\"" + name + "\"" +
+                " | description:\"" + description + "\"" +
+                " | assignee:\"" + assignee.getUsername() + "\" (id:" + assignee.getId() + ")" +
+                " | reporter:\"" + reporter.getUsername() + "\" (id:" + reporter.getId() + ")" +
+                " | status:\"" + status + "\"" +
+                " | priority:\"" + priority + "\"" +
+                " | timeSpent:" + timeSpent +
+                " | timeEstimated:" + timeEstimated;
     }
 }

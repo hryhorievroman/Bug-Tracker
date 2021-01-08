@@ -1,17 +1,17 @@
 package com.cursor.view;
 
-import com.cursor.service.exceptions.BadRequestException;
-import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.model.Ticket;
 import com.cursor.model.User;
+import com.cursor.model.enums.Message;
 import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
 import com.cursor.service.DashboardImpl;
 import com.cursor.service.TicketServiceImpl;
-import com.cursor.service.interfaces.TicketService;
-import com.cursor.model.enums.Message;
 import com.cursor.service.UserServiceImpl;
+import com.cursor.service.exceptions.BadRequestException;
+import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.Dashboard;
+import com.cursor.service.interfaces.TicketService;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -38,7 +38,7 @@ public class Actions {
                     }
                 }
                 case 2 -> {
-                    System.out.println("Lists of tickets: ");
+                    System.out.println("List of tickets: ");
                     ticketService.getAll().forEach(ticket -> System.out.println(ticket.toString()));
                     System.out.println();
                 }
@@ -122,8 +122,7 @@ public class Actions {
                 if (name.isBlank() || description.isBlank()
                         || timeSpent < 0 || timeEstimated < 0) {
                     throw new BadRequestException("A ticket's information is incorrect");
-                }
-                else {
+                } else {
                     ticket.setName(name);
                     ticket.setDescription(description);
                     ticket.setAssignee(assignee);
@@ -172,12 +171,10 @@ public class Actions {
                 if (ticket != null) {
                     ticketService.delete(ticket.getId());
                     isFlowContinued = false;
-                }
-                else {
+                } else {
                     return false;
                 }
-            }
-            catch (NotFoundException exception) {
+            } catch (NotFoundException exception) {
                 System.out.println("[...The ticket with such ID wasn't found. Please enter ID again...]");
             }
         }
@@ -192,11 +189,15 @@ public class Actions {
                 int menu = scanner.nextInt();
                 switch (menu) {
                     case 1 -> {
-                        int time = dashboard.getTotalTime(getUser());
+                        int time = 0;
+                        time = dashboard.getTotalTime(getUser());
                         System.out.println("Estimated time: " + time);
                     }
                     case 2 -> {
-                        int time = dashboard.getSpentTime(getUser());
+                        int time = 0;
+
+                        time = dashboard.getSpentTime(getUser());
+
                         System.out.println("Spent time: " + time);
                     }
                     case 3 -> {
@@ -210,7 +211,7 @@ public class Actions {
                     case 5 -> System.out.println(dashboard.getSystemStatistics());
                     case 6 -> System.out.println(dashboard.getUserStatistics(getUser()));
                     case 7 -> System.out.println(dashboard.getTicketsByStatus(inputTicketStatus()));
-                    case  8 -> System.out.println(dashboard.getTicketsByPriority(inputTicketPriority()));
+                    case 8 -> System.out.println(dashboard.getTicketsByPriority(inputTicketPriority()));
                     case 0 -> isActiveMenu = false;
                     default -> System.out.println("Wrong number, please enter a number 0-5:");
                 }
@@ -229,20 +230,20 @@ public class Actions {
                 System.out.println("Status: " + statusHintEnumeration);
                 statusInput = Utils.expectStringInput();
                 if (statusInput.isBlank() ||
-                            !statusInput.equals("todo")&&
-                            !statusInput.equals("in_progress")&&
-                            !statusInput.equals("in_review")&&
-                            !statusInput.equals("approved")&&
-                            !statusInput.equals("done")){
+                        !statusInput.equals("todo") &&
+                                !statusInput.equals("in_progress") &&
+                                !statusInput.equals("in_review") &&
+                                !statusInput.equals("approved") &&
+                                !statusInput.equals("done")) {
                     throw new BadRequestException(" A ticket's status is incorrect.");
-                }else{
+                } else {
                     isFlowContinued = false;
                 }
             } catch (BadRequestException exception) {
                 System.out.println("[...The status is incorrect. Please enter a new status in a valid form]");
             }
         }
-        return switch (statusInput){
+        return switch (statusInput) {
             case "todo" -> Status.TODO;
             case "in_progress" -> Status.IN_PROGRESS;
             case "in_review" -> Status.IN_REVIEW;
@@ -261,13 +262,13 @@ public class Actions {
                 System.out.println("Priority: " + priorityHintEnumeration);
                 priorityInput = Utils.expectStringInput();
                 if (priorityInput.isBlank() ||
-                        !priorityInput.equals("trivial")&&
-                                !priorityInput.equals("minor")&&
+                        !priorityInput.equals("trivial") &&
+                                !priorityInput.equals("minor") &&
                                 !priorityInput.equals("major") &&
-                                !priorityInput.equals("critical")&&
-                                !priorityInput.equals("blocker")){
+                                !priorityInput.equals("critical") &&
+                                !priorityInput.equals("blocker")) {
                     throw new BadRequestException("A ticket's priority is incorrect.");
-                }else{
+                } else {
                     isFlowContinued = false;
                 }
             } catch (BadRequestException exception) {
