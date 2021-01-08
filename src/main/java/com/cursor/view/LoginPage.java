@@ -181,11 +181,9 @@ public class LoginPage {
                 user.setPassword(inputPassword());
                 userService.edit(usersID, user);
                 wrongInfo = !wrongInfo;
-            }
-            catch (BadRequestException exception) {
+            } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
-            }
-            catch (NotFoundException exception) {
+            } catch (NotFoundException exception) {
                 System.out.println(exception.getErrorMessage());
             }
         }
@@ -206,13 +204,12 @@ public class LoginPage {
         while (!wrongInfo) {
             try {
                 userService.delete(usersID);
-                if (user.getId() == Session.getUser().getId()){
+                if (user.getId() == Session.getUser().getId()) {
                     System.out.println("User with id " + usersID + " was deleted\n");
                     showMainMenu();
                 }
                 wrongInfo = !wrongInfo;
-            }
-            catch (NotFoundException exception) {
+            } catch (NotFoundException exception) {
                 System.out.println(exception.getErrorMessage());
             }
         }
