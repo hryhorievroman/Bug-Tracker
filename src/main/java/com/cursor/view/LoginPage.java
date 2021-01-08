@@ -126,8 +126,9 @@ public class LoginPage {
             }
 
             try {
-                userService.registerUser(new User(userName, password));
-                Session.setUsername(userName);
+                User user = new User(userName, password);
+                userService.registerUser(user);
+                Session.setUser(user);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
@@ -154,8 +155,8 @@ public class LoginPage {
             }
 
             try {
-                userService.loginUser(userName, password);
-                Session.setUsername(userName);
+                User user = userService.loginUser(userName, password);
+                Session.setUser(user);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
@@ -205,7 +206,7 @@ public class LoginPage {
         while (!wrongInfo) {
             try {
                 userService.delete(usersID);
-                if (user.getUsername().equals(Session.getUsername())){
+                if (user.getId() == Session.getUser().getId()){
                     System.out.println("User with id " + usersID + " was deleted\n");
                     showMainMenu();
                 }

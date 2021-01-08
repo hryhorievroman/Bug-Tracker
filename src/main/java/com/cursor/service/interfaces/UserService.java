@@ -7,5 +7,5 @@ public interface UserService extends Service<User> {
 
     void registerUser(User user);
 
-    void loginUser(String username, String password);
+    User loginUser(String username, String password);
 }

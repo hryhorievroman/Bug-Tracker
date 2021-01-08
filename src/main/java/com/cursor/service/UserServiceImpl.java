@@ -24,8 +24,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void loginUser(String username, String password) {
-        checkExistence(username, password);
+    public User loginUser(String username, String password) {
+        return checkExistence(username, password);
     }
 
     @Override
@@ -76,11 +76,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void checkExistence(String userName, String password) {
+    private User checkExistence(String userName, String password) {
         List<User> userList = users.getAll();
         for (User user : userList) {
             if (user.getUsername().equals(userName) && user.getPassword().equals(password)) {
-                return;
+                return user;
             }
         }
         throw new BadRequestException("Username or password is incorrect");

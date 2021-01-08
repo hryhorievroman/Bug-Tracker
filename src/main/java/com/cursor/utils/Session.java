@@ -1,13 +1,15 @@
 package com.cursor.utils;
 
-public class Session {
-    private static String username;
+import com.cursor.model.User;
 
-    public static String getUsername() {
-        return username;
+public class Session {
+    private static User user;
+
+    public static User getUser() {
+        return user;
     }
 
-    public static void setUsername(String username) {
-        Session.username = username;
+    public static void setUser(User username) {
+        Session.user = username;
     }
 }
