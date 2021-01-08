@@ -7,7 +7,7 @@ import com.cursor.service.UserServiceImpl;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
-import com.cursor.utils.Session;
+import com.cursor.utils.UserSession;
 
 import java.util.Scanner;
 
@@ -128,7 +128,7 @@ public class LoginPage {
             try {
                 User user = new User(userName, password);
                 userService.registerUser(user);
-                Session.setUser(user);
+                UserSession.setUser(user);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
@@ -156,7 +156,7 @@ public class LoginPage {
 
             try {
                 User user = userService.loginUser(userName, password);
-                Session.setUser(user);
+                UserSession.setUser(user);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException e) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
@@ -203,7 +203,7 @@ public class LoginPage {
         while (!wrongInfo) {
             try {
                 userService.delete(usersID);
-                if (user.getId() == Session.getUser().getId()) {
+                if (user.getId() == UserSession.getUser().getId()) {
                     System.out.println("User with id " + usersID + " was deleted\n");
                     showMainMenu();
                 }
