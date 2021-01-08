@@ -13,7 +13,6 @@ import java.util.Scanner;
 
 public class LoginPage {
     public static final UserService userService = new UserServiceImpl();
-   // private static String currentLoggedUserName;
     private final Actions actions = new Actions();
     private final Scanner scanner = new Scanner(System.in);
     private static final String TYPE_TO_EXIT = "(for choosing another action enter \"exit\")";
