@@ -7,6 +7,7 @@ import com.cursor.dao.impls.UserDao;
 import com.cursor.service.exceptions.ErrorMessage;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
+
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
@@ -16,7 +17,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(User user) {
         checkExistence(user.getUsername());
-        if (user.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getSize() ||  user.getUsername().length() < Size.USERNAME_MIN_LENGTH.getSize()) {
+        if (user.getPassword().length() < Size.PASSWORD_MIN_LENGTH.getSize() || user.getUsername().length() < Size.USERNAME_MIN_LENGTH.getSize()) {
             throw new BadRequestException("The username/password is too short");
         } else {
             users.create(user);
@@ -24,8 +25,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void loginUser(String username, String password) {
-        checkExistence(username, password);
+    public User loginUser(String username, String password) {
+        return checkExistence(username, password);
     }
 
     @Override
@@ -76,11 +77,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void checkExistence(String userName, String password) {
+    private User checkExistence(String userName, String password) {
         List<User> userList = users.getAll();
         for (User user : userList) {
             if (user.getUsername().equals(userName) && user.getPassword().equals(password)) {
-                return;
+                return user;
             }
         }
         throw new BadRequestException("Username or password is incorrect");

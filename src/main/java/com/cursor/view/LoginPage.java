@@ -7,6 +7,7 @@ import com.cursor.service.UserServiceImpl;
 import com.cursor.service.exceptions.BadRequestException;
 import com.cursor.service.exceptions.NotFoundException;
 import com.cursor.service.interfaces.UserService;
+import com.cursor.utils.Session;
 
 import java.util.Scanner;
 
@@ -77,9 +78,7 @@ public class LoginPage {
                 }
                 case 4 -> {
                     System.out.println("For delete User please enter User's ID " + TYPE_TO_EXIT + ":");
-                    if (deleteUser()) {
-                        isActive = false;
-                    }
+                    deleteUser();
                 }
                 case 5 -> actions.showActionsMenu();
                 case 0 -> showMainMenu();
@@ -127,7 +126,9 @@ public class LoginPage {
             }
 
             try {
-                userService.registerUser(new User(userName, password));
+                User user = new User(userName, password);
+                userService.registerUser(user);
+                Session.setUser(user);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
@@ -154,7 +155,8 @@ public class LoginPage {
             }
 
             try {
-                userService.loginUser(userName, password);
+                User user = userService.loginUser(userName, password);
+                Session.setUser(user);
                 wrongInfo = !wrongInfo;
             } catch (BadRequestException exception) {
                 System.out.println("[...An error while logging in occurred. Please input the username and password again...]");
@@ -179,11 +181,9 @@ public class LoginPage {
                 user.setPassword(inputPassword());
                 userService.edit(usersID, user);
                 wrongInfo = !wrongInfo;
-            }
-            catch (BadRequestException exception) {
+            } catch (BadRequestException exception) {
                 System.out.println(Message.USERNAME_PASSWORD_LENGTH.getMessage());
-            }
-            catch (NotFoundException exception) {
+            } catch (NotFoundException exception) {
                 System.out.println(exception.getErrorMessage());
             }
         }
@@ -204,9 +204,12 @@ public class LoginPage {
         while (!wrongInfo) {
             try {
                 userService.delete(usersID);
+                if (user.getId() == Session.getUser().getId()) {
+                    System.out.println("User with id " + usersID + " was deleted\n");
+                    showMainMenu();
+                }
                 wrongInfo = !wrongInfo;
-            }
-            catch (NotFoundException exception) {
+            } catch (NotFoundException exception) {
                 System.out.println(exception.getErrorMessage());
             }
         }
