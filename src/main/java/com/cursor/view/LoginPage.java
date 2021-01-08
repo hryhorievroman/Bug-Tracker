@@ -203,7 +203,7 @@ public class LoginPage {
         while (!wrongInfo) {
             try {
                 userService.delete(usersID);
-                if (user.getId() == UserSession.getUser().getId()) {
+                if (user.getUsername().equals(UserSession.getUser().getUsername())) {
                     System.out.println("User with id " + usersID + " was deleted\n");
                     showMainMenu();
                 }
