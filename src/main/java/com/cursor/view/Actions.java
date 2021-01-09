@@ -72,74 +72,61 @@ public class Actions {
     public void setTicket(Ticket ticket) {
         boolean isFlowContinued = true;
         while (isFlowContinued) {
-            try {
-                System.out.println("Name: ");
-                String name = scanner.nextLine();
-
-                if (Utils.isExit(name)) {
-                    return;
-                }
-
-                System.out.println("Description: ");
-                String description = scanner.nextLine();
-
-                if (Utils.isExit(description)) {
-                    return;
-                }
-
-                System.out.println("Assignee:");
-                User assignee = Utils.findUser();
-
-                if (assignee == null) {
-                    return;
-                }
-
-                System.out.println("Reporter:");
-                User reporter = Utils.findUser();
-
-                if (reporter == null) {
-                    return;
-                }
-
-                Status status = inputTicketStatus();
-
-                Priority priority = inputTicketPriority();
-
-                System.out.println("Time spent:");
-                int timeSpent = Utils.expectNumInput();
-
-                if (timeSpent == -1) {
-                    return;
-                }
-
-                System.out.println("Time estimated:");
-                int timeEstimated = Utils.expectNumInput();
-
-                if (timeEstimated == -1) {
-                    return;
-                }
-
-                if (name.isBlank() || description.isBlank()
-                        || timeSpent < 0 || timeEstimated < 0) {
-                    throw new BadRequestException("A ticket's information is incorrect");
-                } else {
-                    ticket.setName(name);
-                    ticket.setDescription(description);
-                    ticket.setAssignee(assignee);
-                    ticket.setReporter(reporter);
-                    ticket.setStatus(status);
-                    ticket.setPriority(priority);
-                    ticket.setTimeSpent(timeSpent);
-                    ticket.setTimeEstimated(timeEstimated);
-                    isFlowContinued = false;
-                }
-            } catch (BadRequestException exception) {
-                System.out.println("Please type a ticket's information correctly:" +
-                        "\n\tDescription should NOT be empty" +
-                        "\n\tIDs values should be correct" +
-                        "\n\tEnter Status and Priority values as digits from 0 to 5" +
-                        "\n\tTime spent and Time estimated values should be larger than 0\n");
+            System.out.println("Name: ");
+            String name = Utils.expectStringInput();
+            if (Utils.isExit(name)) {
+                return;
             }
+
+            System.out.println("Description: ");
+            String description = Utils.expectStringInput();
+
+            if (Utils.isExit(description)) {
+                return;
+            }
+
+            System.out.println("Assignee:");
+            User assignee = Utils.findUser();
+
+            if (assignee == null) {
+                return;
+            }
+
+            System.out.println("Reporter:");
+            User reporter = Utils.findUser();
+
+            if (reporter == null) {
+                return;
+            }
+
+            Status status = inputTicketStatus();
+
+            Priority priority = inputTicketPriority();
+
+            System.out.println("Time spent:");
+            int timeSpent = Utils.expectNumInput();
+
+            if (timeSpent < 0) {
+                return;
+            }
+
+            System.out.println("Time estimated:");
+            int timeEstimated = Utils.expectNumInput();
+
+            if (timeEstimated < 0) {
+                return;
+            }
+
+            ticket.setName(name);
+            ticket.setDescription(description);
+            ticket.setAssignee(assignee);
+            ticket.setReporter(reporter);
+            ticket.setStatus(status);
+            ticket.setPriority(priority);
+            ticket.setTimeSpent(timeSpent);
+            ticket.setTimeEstimated(timeEstimated);
+            isFlowContinued = false;
+
         }
     }
 

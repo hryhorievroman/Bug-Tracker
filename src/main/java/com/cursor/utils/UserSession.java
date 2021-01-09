@@ -2,7 +2,7 @@ package com.cursor.utils;
 
 import com.cursor.model.User;
 
-public class Session {
+public class UserSession {
     private static User user;
 
     public static User getUser() {
@@ -10,6 +10,6 @@ public class Session {
     }
 
     public static void setUser(User user) {
-        Session.user = user;
+        UserSession.user = user;
     }
 }
