@@ -2,6 +2,8 @@ package com.cursor.dao.impls;
 
 import com.cursor.dao.interfaces.CRUD;
 import com.cursor.model.User;
+import com.cursor.service.exceptions.NotFoundException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,8 @@ public class UserDaoDb implements CRUD<User> {
             Statement statement = connection.createStatement();
             String input = "insert into users(name, password) values ('" + entity.getUsername() + "', '" + entity.getPassword() + "')";
             statement.executeUpdate(input);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return true;
     }
@@ -51,8 +53,8 @@ public class UserDaoDb implements CRUD<User> {
                 user.setId(uId);
                 usersDb.add(user);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return usersDb;
     }
@@ -72,10 +74,14 @@ public class UserDaoDb implements CRUD<User> {
                 user.setId(uId);
                 usersDb.add(0, user);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return usersDb.get(0);
+        if (!usersDb.isEmpty()) {
+            return usersDb.get(0);
+        } else {
+            throw new NotFoundException("User doesn't found");
+        }
     }
 
     @Override
@@ -85,8 +91,8 @@ public class UserDaoDb implements CRUD<User> {
             String input = "update users set name = '" + entity.getUsername() + "', password = '" + entity.getPassword() + "' where id = '" + id + "'";
             statement.executeUpdate(input);
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return true;
     }
@@ -97,8 +103,8 @@ public class UserDaoDb implements CRUD<User> {
             Statement statement = connection.createStatement();
             String input = "delete from users where id = '" + id + "'";
             statement.executeUpdate(input);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return true;
     }

@@ -5,6 +5,8 @@ import com.cursor.model.Ticket;
 import com.cursor.model.User;
 import com.cursor.model.enums.Priority;
 import com.cursor.model.enums.Status;
+import com.cursor.service.exceptions.NotFoundException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +40,8 @@ public class TicketDaoDb implements CRUD<Ticket> {
                     "','" + entity.getTimeEstimated() + "')";
             statement.executeUpdate(input);
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return true;
     }
@@ -56,8 +58,14 @@ public class TicketDaoDb implements CRUD<Ticket> {
                 int tId = resultSet.getInt(1);
                 String tName = resultSet.getString(2);
                 String tDescription = resultSet.getString(3);
-                User tAssignee = userDaoDb.findById(resultSet.getInt(4));
-                User tReporter = userDaoDb.findById(resultSet.getInt(5));
+                User tAssignee, tReporter;
+                try {
+                    tAssignee = userDaoDb.findById(resultSet.getInt(4));
+                    tReporter = userDaoDb.findById(resultSet.getInt(5));
+                } catch (NotFoundException e) {
+                    tAssignee = new User();
+                    tReporter = new User();
+                }
                 Status tStatus = inputTicketStatus(resultSet.getString(6));
                 Priority tPriority = inputTicketPriority(resultSet.getString(7));
                 int tTimeSpent = resultSet.getInt(8);
@@ -66,8 +74,8 @@ public class TicketDaoDb implements CRUD<Ticket> {
                 ticket.setId(tId);
                 ticketsDb.add(ticket);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return ticketsDb;
     }
@@ -83,8 +91,14 @@ public class TicketDaoDb implements CRUD<Ticket> {
                 int tId = resultSet.getInt(1);
                 String tName = resultSet.getString(2);
                 String tDescription = resultSet.getString(3);
-                User tAssignee = userDaoDb.findById(resultSet.getInt(4));
-                User tReporter = userDaoDb.findById(resultSet.getInt(5));
+                User tAssignee, tReporter;
+                try {
+                    tAssignee = userDaoDb.findById(resultSet.getInt(4));
+                    tReporter = userDaoDb.findById(resultSet.getInt(5));
+                } catch (NotFoundException e) {
+                    tAssignee = new User();
+                    tReporter = new User();
+                }
                 Status tStatus = inputTicketStatus(resultSet.getString(6));
                 Priority tPriority = inputTicketPriority(resultSet.getString(7));
                 int tTimeSpent = resultSet.getInt(8);
@@ -96,7 +110,11 @@ public class TicketDaoDb implements CRUD<Ticket> {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return ticketsDb.get(0);
+        if (!ticketsDb.isEmpty()) {
+            return ticketsDb.get(0);
+        } else {
+            throw new NotFoundException("Ticket doesn't found");
+        }
     }
 
     @Override
@@ -109,8 +127,8 @@ public class TicketDaoDb implements CRUD<Ticket> {
                     "time_estimated = '" + entity.getTimeEstimated() + "' where id = '" + id + "'";
             statement.executeUpdate(input);
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return true;
     }
