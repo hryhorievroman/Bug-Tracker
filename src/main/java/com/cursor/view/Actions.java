@@ -201,17 +201,19 @@ public class Actions {
                         System.out.println(dashboard.getUserStatistics(Utils.findUser()));
                     }
                     case 7 -> {
-                        if (dashboard.getTicketsByStatus(inputTicketStatus()).isEmpty()) {
+                        List<Ticket> statuses = dashboard.getTicketsByStatus(inputTicketStatus());
+                        if (statuses.isEmpty()) {
                             System.out.println("There are no tickets with this status");
                         } else {
-                            System.out.println(dashboard.getTicketsByStatus(inputTicketStatus()));
+                            System.out.println(statuses);
                         }
                     }
                     case 8 -> {
-                        if (dashboard.getTicketsByPriority(inputTicketPriority()).isEmpty()) {
+                        List<Ticket> priorities = dashboard.getTicketsByPriority(inputTicketPriority());
+                        if (priorities.isEmpty()) {
                             System.out.println("There are no tickets with this priority");
                         } else {
-                            System.out.println(dashboard.getTicketsByPriority(inputTicketPriority()));
+                            System.out.println(priorities);
                         }
                     }
                     case 0 -> isActiveMenu = false;
